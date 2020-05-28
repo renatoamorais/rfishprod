@@ -1,0 +1,28 @@
+
+bibentry(
+  bibtype  = "Article",
+  title    = "Principles for estimating fish productivity on coral reefs",
+  author   = c(person("Renato A.", "Morais"),
+  	       person("David R.", "Bellwood")),
+  journal  = "Coral Reefs",
+  year     = "2020",
+  volume   = "In Review",
+  header   = "To cite rfishprod in publications use:",
+  textVersion = "Morais, RA; Bellwood, DR. Principles for estimating fish productivity on coral reefs. Coral Reefs. In review."
+)
+
+bibentry(
+  bibtype  = "Article",
+  title    = "Global drivers of reef fish growth",
+  author   = c(person("Renato A.", "Morais"),
+  	       person("David R.", "Bellwood")),
+  journal  = "Fish and Fisheries",
+  year     = "2018",
+  volume   = "19",
+  number   = "5",
+  pages    = "874--889",
+  doi      = "10.1111/faf.12297",
+  header   = "If using predKmax, please also consider citing:",
+  textVersion = "Morais, RA; Bellwood, DR (2018) Global drivers of reef fish growth. Fish and Fisheries, 19(5): 874-889. DOI: 10.1111/faf.12297"
+)
+

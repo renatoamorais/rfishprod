@@ -1,0 +1,990 @@
+########################################################################
+#### Conceptual figure paper frameworkd of productivity estimates ######
+################################################ May-2018 ##############
+#
+library (FSA)#
+library (scales)#
+#
+vbf <- vbFuns ("typical")#
+#----------------------------------------------------##
+## First: somatic growth rate and cumulative growth ###
+#----------------------------------------------------##
+#
+### Growth and length-weight parameters of a fish (Scarus frenatus from lizard_traits.csv) ####
+Linff <- 29.5#
+kf <- 0.448#
+t0f <- -0.1 ## est#
+af <- 0.0166#
+bf <- 3.07#
+#
+### Age vector ####
+tf <- c (seq (-0.1, 20, 0.01))#
+#
+### Length and mass vectors ####
+lvec <- vbf (tf, Linff, kf, t0f)#
+mvec <- af * (lvec ^ bf)#
+### Calculating growth rates (derivatives) ####
+dfmvec <- c (diff (mvec), 0)#
+#-----------------------------------------------------##
+## Second: somatic growth rate and cumulative growth ###
+#-----------------------------------------------------##
+#
+### Reproductive output scaling with mass, with data from Barneche et al. 2018 Science ####
+### It appears that the formula for a generalised intercept is (from his Supp Mat eq 2:6) ####
+### Int fecundity.mass * Int egg-energy.egg-vol * (Int egg-vol.mas ^ slope egg-energy.egg-vol) ####
+### the slope of the reproductive energety.mass is from Scarus psittacus. Converted to mass ####
+### using the relationship of 23.46 J/mg of dry weight and dry weight = 0.25 * wet weight ####
+### Size at maturity for Scarus psittacus (FishBase) is 10.5 cm TL#
+#
+### Combining intercepts and slope for estimating energy reproductive output ####
+intf <- 2.93 * 2.15 * 0.15#
+slf <- 1.18 + 0.14 * 0.77#
+### Converting from joules to grams wet weight ###
+### If 23.46 J/mg dry weight, there's (23.46 * 0.25) * 1000 J/g wet weight#
+conversion <- (23.46 * 0.25) * 1000#
+#
+### Estimating mass reproductive rate ####
+dfmrepJ <- exp (intf * (log (mvec) ^ slf))#
+dfmrep <- ifelse (is.na (dfmrepJ), 0, dfmrepJ)  / conversion#
+	dfmrep [lvec < 10.5] <- 0#
+#
+### Cumulative reproductive output ####
+mrep <- cumsum (dfmrep)#
+#
+### Not taking into account spawning frequency, axis should not be interpreted ####
+### Figure showing age-specific growth and growth rate, reproductive output and reproductive rate ####
+#
+plotage <- function (x, y, rate.y, xlab = 'Age', ylab, mgp = c (0.5, 0.5,0),...) {#
+	dy <- rescale (rate.y, range (y))#
+	plot (x, y, type = 'l', xlab = xlab, ylab = ylab, mgp = mgp, xaxt = 'n', yaxt = 'n',...)#
+		lines (x, dy, lty = 'dashed',...)#
+}#
+#
+par (mfrow = c (1,2), mar = c (2,2,1,1))#
+plotage (tf, mvec, dfmvec, ylab = 'Body mass')#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output')#
+## 1mg = 23.46 J#
+## 30kg
+temp <- 29#
+#
+z <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp))
+z <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))
+z
+s <- exp (-z)
+s
+zd <- zy / 365
+zy <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))
+zd <- zy / 365
+sy <- exp (-zy)
+sd <- exp (-zd)
+sd
+my <- 1 - exp (-zy)
+md <- 1 - exp (-zd)
+md
+Linff
+Linff = 6
+kf = 2.4
+zy <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))
+zy
+zd <- zy / 365
+zd
+my <- 1 - exp (-zy)
+my
+md <- 1 - exp (-zd)
+md
+mvec
+my
+md
+vbf
+tf
+lvec
+vbf
+t
+tf
+t0f
+tf
+tf - t0f
+kf
+Linff <- 29.5#
+kf <- 0.448#
+t0f <- -0.1 ## est#
+af <- 0.0166#
+bf <- 3.07
+-kf
+exp(-kf * (tf - t0f))
+exp (-zy)
+zy <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))
+zy
+zd <- zy / 365
+zd
+exp(-zy * (tf - t0f))
+round (exp (-zy * (tf - t0f)), 3)
+my
+my <- 1 - exp (-zy)
+my
+md <- 1 - exp (-zd)
+md
+t
+range (tf)
+exp (-zy)
+1 - exp (-zy)
+vbf
+t=tf
+max (t)
+(1 - exp (-z * (t - to)))
+(1 - exp (-z * (t - t0)))
+-zy * (tf - t0f))
+-zy * (tf - t0f)
+exp (-zy * (tf - t0f))
+exp (-zy)
+range (tf - t0f)
+zy
+(tf - t0f))
+(tf - t0f)
+exp (-zy) * (tf - t0f)
+exp (-zy)
+(tf - t0f) ^ exp (-zy)
+1 - exp (-zy * (tf - t0f))
+mf <- function (t, z, t0) {#
+	 1 - exp (-z * (t - t0))#
+}
+mf (tf, zy, t0f)
+diff (mf (tf, zy, t0f))
+round (diff (mf (tf, zy, t0f)), 5)
+cummor <- mf (tf, zy, t0f)
+dfmor <- diff (cummor)
+plotage (tf, cummor, dfmor, ylab = 'Mortality experienced')
+dfmor
+dfmor <- c (diff (cummor), 0)
+plotage (tf, cummor, dfmor, ylab = 'Mortality experienced')
+plot (tf, cummor)
+plot (tf, cummor, type = 'l')
+plot (mvec, cummor, type = 'l')
+plot (lvec, cummor, type = 'l')
+lines (lvec, dfmor, lty = 'dashed')
+lines (lvec, rescale (dfmor, range (cummor)), lty = 'dashed')
+plot (lvec, cummor, type = 'l')#
+lines (lvec, rescale (dfmor, range (cummor)), lty = 'dashed')
+round (dfmor, 4)
+sum(dfmor)
+cummorabs <- cummmor * tf
+cummorabs <- cummor * tf
+cummorabs
+cummorabs <- dfmor * tf
+cummorabs
+library (vegan)#
+library (shape)
+panel.hist <- function(x, ...)#
+{#
+    usr <- par("usr"); on.exit(par(usr))#
+    par(usr = c(usr[1:2], 0, 1.5) )#
+    h <- hist(x, plot = FALSE)#
+    breaks <- h$breaks; nB <- length(breaks)#
+    y <- h$counts; y <- y/max(y)#
+    rect(breaks[-nB], 0, breaks[-1], y, ...)#
+}#
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)#
+{#
+    usr <- par("usr"); on.exit(par(usr))#
+    par(usr = c(0, 1, 0, 1))#
+    r <- abs(cor(x, y))#
+    txt <- format(c(r, 0.123456789), digits = digits)[1]#
+    txt <- paste0(prefix, txt)#
+    if(missing(cex.cor)) cex.cor <- 0.6/strwidth(txt)#
+    text(0.5, 0.5, txt, cex = cex.cor * r)#
+}
+library (FSA)#
+library (scales)#
+#
+vbf <- vbFuns ("typical")#
+#----------------------------------------------------##
+## First: somatic growth rate and cumulative growth ###
+#----------------------------------------------------##
+#
+### Growth and length-weight parameters of a fish (Scarus frenatus from lizard_traits.csv) ####
+Linff <- 29.5#
+kf <- 0.448#
+t0f <- -0.1 ## est#
+af <- 0.0166#
+bf <- 3.07#
+#
+### Age vector ####
+tf <- c (seq (-0.1, 20, 0.01))#
+#
+### Length and mass vectors ####
+lvec <- vbf (tf, Linff, kf, t0f)#
+mvec <- af * (lvec ^ bf)#
+### Calculating growth rates (derivatives) ####
+dfmvec <- c (diff (mvec), 0)#
+#-----------------------------------------------------------------------##
+## Second: reproductive output rate and cumulative reproductive output ###
+#-----------------------------------------------------------------------##
+#
+### Reproductive output scaling with mass, with data from Barneche et al. 2018 Science ####
+### It appears that the formula for a generalised intercept is (from his Supp Mat eq 2:6) ####
+### Int fecundity.mass * Int egg-energy.egg-vol * (Int egg-vol.mas ^ slope egg-energy.egg-vol) ####
+### the slope of the reproductive energety.mass is from Scarus psittacus. Converted to mass ####
+### using the relationship of 23.46 J/mg of dry weight and dry weight = 0.25 * wet weight ####
+### Size at maturity for Scarus psittacus (FishBase) is 10.5 cm TL#
+#
+### Combining intercepts and slope for estimating energy reproductive output ####
+intf <- 2.93 * 2.15 * 0.15#
+slf <- 1.18 + 0.14 * 0.77#
+### Converting from joules to grams wet weight ###
+### If 23.46 J/mg dry weight, there's (23.46 * 0.25) * 1000 J/g wet weight#
+conversion <- (23.46 * 0.25) * 1000#
+#
+### Estimating mass reproductive rate ####
+dfmrepJ <- exp (intf * (log (mvec) ^ slf))#
+dfmrep <- ifelse (is.na (dfmrepJ), 0, dfmrepJ)  / conversion#
+	dfmrep [lvec < 10.5] <- 0#
+#
+### Cumulative reproductive output ####
+mrep <- cumsum (dfmrep)
+temp <- 29#
+zy <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))#
+zd <- zy / 365#
+#
+## Proportional mortality per year and per day ###
+my <- 1 - exp (-zy)#
+md <- 1 - exp (-zd)#
+## Function for cumulative mortality ###
+mf <- function (t, z, t0) {#
+	 1 - exp (-z * (t - t0))#
+}#
+#
+cummor <- mf (tf, zy, t0f)#
+## Mortality experience at each time ###
+dfmor <- c (diff (cummor), 0)#
+#cummorabs <- dfmor * tf#
+#
+plot (tf, cummor, type = 'l')#
+plot (lvec, cummor, type = 'l')#
+lines (lvec, rescale (dfmor, range (cummor)), lty = 'dashed')
+plotage <- function (x, y, rate.y, xlab = 'Age', ylab, mgp = c (0.5, 0.5,0),...) {#
+	dy <- rescale (rate.y, range (y))#
+	plot (x, y, type = 'l', xlab = xlab, ylab = ylab, mgp = mgp, xaxt = 'n', yaxt = 'n',...)#
+		lines (x, dy, lty = 'dashed',...)#
+}#
+#
+par (mfrow = c (1,2), mar = c (2,2,1,1))#
+plotage (tf, mvec, dfmvec, ylab = 'Body mass')#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output')#
+plotage (tf, cummor, dfmor, ylab = 'Mortality experienced')
+par (mfrow = c (1,3), mar = c (2,2,1,1))#
+plotage (tf, mvec, dfmvec, ylab = 'Body mass')#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output')#
+plotage (tf, cummor, dfmor, ylab = 'Mortality experienced')
+########################################################################
+#### Conceptual figure paper frameworkd of productivity estimates ######
+################################################ May-2018 ##############
+#
+library (FSA)#
+library (scales)#
+library (png)#
+#
+vbf <- vbFuns ("typical")#
+#----------------------------------------------------##
+## First: somatic growth rate and cumulative growth ###
+#----------------------------------------------------##
+#
+### Growth and length-weight parameters of a fish (Scarus frenatus from lizard_traits.csv) ####
+Linff <- 29.5#
+kf <- 0.448#
+t0f <- -0.1 ## est#
+af <- 0.0166#
+bf <- 3.07#
+#
+### Age vector ####
+tf <- c (seq (-0.1, 20, 0.01))#
+#
+### Length and mass vectors ####
+lvec <- vbf (tf, Linff, kf, t0f)#
+mvec <- af * (lvec ^ bf)#
+### Calculating growth rates (derivatives) ####
+dfmvec <- c (diff (mvec), 0)#
+#-----------------------------------------------------------------------##
+## Second: reproductive output rate and cumulative reproductive output ###
+#-----------------------------------------------------------------------##
+#
+### Reproductive output scaling with mass, with data from Barneche et al. 2018 Science ####
+### It appears that the formula for a generalised intercept is (from his Supp Mat eq 2:6) ####
+### Int fecundity.mass * Int egg-energy.egg-vol * (Int egg-vol.mas ^ slope egg-energy.egg-vol) ####
+### the slope of the reproductive energety.mass is from Scarus psittacus. Converted to mass ####
+### using the relationship of 23.46 J/mg of dry weight and dry weight = 0.25 * wet weight ####
+### Size at maturity for Scarus psittacus (FishBase) is 10.5 cm TL#
+#
+### Combining intercepts and slope for estimating energy reproductive output ####
+intf <- 2.93 * 2.15 * 0.15#
+slf <- 1.18 + 0.14 * 0.77#
+### Converting from joules to grams wet weight ###
+### If 23.46 J/mg dry weight, there's (23.46 * 0.25) * 1000 J/g wet weight#
+conversion <- (23.46 * 0.25) * 1000#
+#
+### Estimating mass reproductive rate ####
+dfmrepJ <- exp (intf * (log (mvec) ^ slf))#
+dfmrep <- ifelse (is.na (dfmrepJ), 0, dfmrepJ)  / conversion#
+	dfmrep [lvec < 10.5] <- 0#
+#
+### Cumulative reproductive output ####
+mrep <- cumsum (dfmrep)#
+#
+### Not taking into account spawning frequency, axis should not be interpreted ####
+#--------------------------------------------------------------##
+## Third: mortality rate and cumulative mortality probability ###
+#--------------------------------------------------------------##
+#
+## From Pauly (1980)'s equation to estimate Z ###
+temp <- 29#
+zy <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))#
+zd <- zy / 365#
+#
+## Proportional mortality per year and per day ###
+my <- 1 - exp (-zy)#
+md <- 1 - exp (-zd)#
+## Function for cumulative mortality ###
+mf <- function (t, z, t0) {#
+	 1 - exp (-z * (t - t0))#
+}#
+#
+cummor <- mf (tf, zy, t0f)#
+## Mortality experience at each time ###
+dfmor <- c (diff (cummor), 0)#
+#cummorabs <- dfmor * tf#
+#
+plot (tf, cummor, type = 'l')#
+plot (lvec, cummor, type = 'l')#
+lines (lvec, rescale (dfmor, range (cummor)), lty = 'dashed')#
+#
+#--------------------------------------##
+## Fourth: Plotting the relationships ###
+#--------------------------------------##
+#
+#col <- c ('#404096', '#498CC2', '#D92120', '#E68B33')#
+col <- c ('#4065B1', '#D92120')#
+#
+thr <- c (tf[which.max (dfmvec)], tf [which (mvec > 0.945 * max (mvec)) [1]], tf [which (mvec > 0.9985 * max (mvec)) [1]])#
+thrl <- c (tf [which (mvec > rescale (dfmvec, range (mvec))) [1]], tf [which (mvec > 0.99 * max (mvec)) [1]])#
+#
+### Figure showing age-specific growth and growth rate, reproductive output and reproductive rate ####
+#
+plotage <- function (x, y, rate.y, xlab = 'Age', ylab, mgp = c (0.5, 0.5,0), lwd = 1, thrl, lwdf = 0.25,...) {#
+	dy <- rescale (rate.y, range (y))#
+	mid <- (max (y) - min (y)) * 0.6#
+	plot (x, y, type = 'l', xlab = xlab, ylab = ylab, mgp = mgp, xaxt = 'n', yaxt = 'n',lwd = lwd, ...)#
+		lines (x, dy, lty = 'dotted', lwd = lwd*lwdf, ...)#
+		abline (v = thrl, lwd = 0.5, col = 'grey25')#
+		#points (x = thr, y = rep (mid, length (thr)), pch = 16, cex = 3, ...)#
+		#text (x = thr, y = rep (mid, length (thr)), labels = 1:length (thr), cex = 1.3, col = 'white')#
+}#
+#
+par (mfrow = c (2,1), mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = 'grey25')#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'white')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)#
+#-----------------------------------##
+## Fifth: reading and plotting PNG ###
+#-----------------------------------
+fig1 <- readPNG ('growthind.png')
+?readPNG
+rasterImage (fig1)
+?rasterImage
+plot (NULL, xlim = c (0,100), ylim = c(0,100))
+rasterImage (fig1, 0,100,0,100)
+?rasterImage
+dim(fig1)
+?rasterImage
+plot (NULL, xlim = c (0,1999), ylim = c(0, 3223))#
+rasterImage (fig1, 0,0,1999,3223)
+plot (NULL, xlim = c (0,1999), ylim = c(0, 3223), xaxt = 'n', yaxt = 'n', xlab = '', ylab = '')#
+rasterImage (fig1, 0,0,1999,3223)
+dim(fig1)
+mat <- matrix (c (1,2,3,3), nrow = 2, ncol = 2)
+mat
+mat <- matrix (c (1,2,3,3), nrow = 2, ncol = 2)#
+layout (mat, widths = c (2,1))#
+layout.show (3)
+par (mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = 'grey25')#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'white')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)#
+#
+plot (NULL, xlim = c (0, dim (fig1)[2]), ylim = c(0, dim(fig1)[1]), xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n')#
+rasterImage (fig1, 0,0,dim (fig1)[2],dim(fig1)[1])
+layout.show (3)
+mat <- matrix (c (1,2,3,3), nrow = 2, ncol = 2)#
+layout (mat, widths = c (1.8,1))#
+layout.show (3)#
+#
+par (mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = 'grey25')#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'white')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)#
+#
+plot (NULL, xlim = c (0, dim (fig1)[2]), ylim = c(0, dim(fig1)[1]), xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n')#
+rasterImage (fig1, 0,0,dim (fig1)[2],dim(fig1)[1])
+mat <- matrix (c (1,2,3,3), nrow = 2, ncol = 2)#
+layout (mat, widths = c (1.8,1))#
+layout.show (3)#
+#
+par (mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = 'grey25')#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'white')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)#
+#
+par (mar = c (0,0,0,0.5))#
+plot (NULL, xlim = c (0, dim (fig1)[2]), ylim = c(0, dim(fig1)[1]), xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n')#
+rasterImage (fig1, 0,0,dim (fig1)[2],dim(fig1)[1])
+mat <- matrix (c (1,2,3,3), nrow = 2, ncol = 2)#
+layout (mat, widths = c (1.6,1))#
+layout.show (3)#
+#
+par (mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = 'grey25')#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'white')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)#
+#
+par (mar = c (0,0,0,0.5))#
+plot (NULL, xlim = c (0, dim (fig1)[2]), ylim = c(0, dim(fig1)[1]), xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n')#
+rasterImage (fig1, 0,0,dim (fig1)[2],dim(fig1)[1])
+col <- c ('#3282FB', '#FD5D44')#
+#
+thr <- c (tf[which.max (dfmvec)], tf [which (mvec > 0.945 * max (mvec)) [1]], tf [which (mvec > 0.9985 * max (mvec)) [1]])#
+thrl <- c (tf [which (mvec > rescale (dfmvec, range (mvec))) [1]], tf [which (mvec > 0.99 * max (mvec)) [1]])#
+#
+### Figure showing age-specific growth and growth rate, reproductive output and reproductive rate ####
+#
+plotage <- function (x, y, rate.y, xlab = 'Age', ylab, mgp = c (0.5, 0.5,0), lwd = 1, thrl, lwdf = 0.25,...) {#
+	dy <- rescale (rate.y, range (y))#
+	mid <- (max (y) - min (y)) * 0.6#
+	plot (x, y, type = 'l', xlab = xlab, ylab = ylab, mgp = mgp, xaxt = 'n', yaxt = 'n',lwd = lwd, ...)#
+		lines (x, dy, lty = 'dotted', lwd = lwd*lwdf, ...)#
+		abline (v = thrl, lwd = 0.5, col = 'grey25')#
+		#points (x = thr, y = rep (mid, length (thr)), pch = 16, cex = 3, ...)#
+		#text (x = thr, y = rep (mid, length (thr)), labels = 1:length (thr), cex = 1.3, col = 'white')#
+}#
+#-----------------------------------##
+## Fifth: reading and plotting PNG ###
+#-----------------------------------##
+#
+### Reading PNG ####
+fig1 <- readPNG ('growthind.png')#
+#
+### Layout and par ####
+mat <- matrix (c (1,2,3,3), nrow = 2, ncol = 2)#
+layout (mat, widths = c (1.6,1))#
+layout.show (3)#
+#
+par (mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = 'grey25')#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'white')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)
+library (viridis)
+viridis
+mat <- matrix (c (1,2,3,3), nrow = 2, ncol = 2)#
+layout (mat, widths = c (1.6,1))#
+layout.show (3)#
+#
+par (mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = viridis(3))#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'white')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)#
+#
+par (mar = c (0,0,0,0.5))#
+plot (NULL, xlim = c (0, dim (fig1)[2]), ylim = c(0, dim(fig1)[1]), xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n')#
+rasterImage (fig1, 0,0,dim (fig1)[2],dim(fig1)[1])
+par (mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = viridis(4)[1:3])#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'white')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)
+viridis(4)[1:3]
+fig1 <- readPNG ('growthind.png')
+dim(fig1)
+mat <- matrix (c (1,2,3,3), nrow = 2, ncol = 2)#
+layout (mat, widths = c (1.6,1))#
+layout.show (3)#
+#
+par (mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = colc)#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'white')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)#
+#
+par (mar = c (0,0,0,0.5))#
+plot (NULL, xlim = c (0, dim (fig1)[2]), ylim = c(0, dim(fig1)[1]), xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n')#
+rasterImage (fig1, 0,0,dim (fig1)[2],dim(fig1)[1])
+colc <- c ('#6EB387', '#A1BE56', '#D3B33F')
+col <- c ('#3282FB', '#FD5D44')#
+colc <- c ('#6EB387', '#A1BE56', '#D3B33F')#
+#
+thr <- c (tf[which.max (dfmvec)], tf [which (mvec > 0.945 * max (mvec)) [1]], tf [which (mvec > 0.9985 * max (mvec)) [1]])#
+thrl <- c (tf [which (mvec > rescale (dfmvec, range (mvec))) [1]], tf [which (mvec > 0.99 * max (mvec)) [1]])#
+#
+### Figure showing age-specific growth and growth rate, reproductive output and reproductive rate ####
+#
+plotage <- function (x, y, rate.y, xlab = 'Age', ylab, mgp = c (0.5, 0.5,0), lwd = 1, thrl, lwdf = 0.25,...) {#
+	dy <- rescale (rate.y, range (y))#
+	mid <- (max (y) - min (y)) * 0.6#
+	plot (x, y, type = 'l', xlab = xlab, ylab = ylab, mgp = mgp, xaxt = 'n', yaxt = 'n',lwd = lwd, ...)#
+		lines (x, dy, lty = 'dotted', lwd = lwd*lwdf, ...)#
+		abline (v = thrl, lwd = 0.5, col = 'grey25')#
+		#points (x = thr, y = rep (mid, length (thr)), pch = 16, cex = 3, ...)#
+		#text (x = thr, y = rep (mid, length (thr)), labels = 1:length (thr), cex = 1.3, col = 'white')#
+}#
+#-----------------------------------##
+## Fifth: reading and plotting PNG ###
+#-----------------------------------##
+#
+### Reading PNG ####
+fig1 <- readPNG ('growthind.png')#
+#
+### Layout and par ####
+mat <- matrix (c (1,2,3,3), nrow = 2, ncol = 2)#
+layout (mat, widths = c (1.5,1))#
+layout.show (3)#
+#
+par (mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = colc)#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'white')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)#
+#
+par (mar = c (0,0,0,0.5))#
+plot (NULL, xlim = c (0, dim (fig1)[2]), ylim = c(0, dim(fig1)[1]), xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n')#
+rasterImage (fig1, 0,0,dim (fig1)[2],dim(fig1)[1])
+-0.13*max(mvec),3)
+-0.13*max(mvec)
+range(mvec)
+col <- c ('#3282FB', '#FD5D44')#
+colc <- c ('#6EB387', '#A1BE56', '#D3B33F')#
+#
+thr <- c (tf[which.max (dfmvec)], tf [which (mvec > 0.945 * max (mvec)) [1]], tf [which (mvec > 0.9985 * max (mvec)) [1]])#
+thrl <- c (tf [which (mvec > rescale (dfmvec, range (mvec))) [1]], tf [which (mvec > 0.99 * max (mvec)) [1]])#
+#
+### Figure showing age-specific growth and growth rate, reproductive output and reproductive rate ####
+#
+plotage <- function (x, y, rate.y, xlab = 'Age', ylab, mgp = c (0.5, 0.5,0), lwd = 1, thrl, lwdf = 0.25,...) {#
+	dy <- rescale (rate.y, range (y))#
+	mid <- (max (y) - min (y)) * 0.6#
+	plot (x, y, type = 'l', xlab = xlab, ylab = ylab, mgp = mgp, xaxt = 'n', yaxt = 'n',lwd = lwd, ...)#
+		lines (x, dy, lty = 'dotted', lwd = lwd*lwdf, ...)#
+		abline (v = thrl, lwd = 0.5, col = 'grey25')#
+		#points (x = thr, y = rep (mid, length (thr)), pch = 16, cex = 3, ...)#
+		#text (x = thr, y = rep (mid, length (thr)), labels = 1:length (thr), cex = 1.3, col = 'white')#
+}#
+#-----------------------------------##
+## Fifth: reading and plotting PNG ###
+#-----------------------------------##
+#
+### Reading PNG ####
+#fig1 <- readPNG ('growthind.png')#
+#
+### Layout and par ####
+#mat <- matrix (c (1,2,3,3), nrow = 2, ncol = 2)#
+#layout (mat, widths = c (1.5,1))#
+#layout.show (3)#
+#
+par (mfrow = c (2,1), mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = colc)#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'black')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)
+pdf ('indplot.pdf', width = 5, height = 6)#
+par (mfrow = c (2,1), mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = colc)#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'black')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)#
+#
+dev.off ()
+library (FSA)#
+library (scales)#
+library (png)#
+#
+vbf <- vbFuns ("typical")#
+#----------------------------------------------------##
+## First: somatic growth rate and cumulative growth ###
+#----------------------------------------------------##
+#
+### Growth and length-weight parameters of a fish (Scarus frenatus from lizard_traits.csv) ####
+Linff <- 29.5#
+kf <- 0.448#
+t0f <- -0.1 ## est#
+af <- 0.0166#
+bf <- 3.07#
+#
+### Age vector ####
+tf <- c (seq (-0.1, 20, 0.01))#
+#
+### Length and mass vectors ####
+lvec <- vbf (tf, Linff, kf, t0f)#
+mvec <- af * (lvec ^ bf)#
+### Calculating growth rates (derivatives) ####
+dfmvec <- c (diff (mvec), 0)#
+#-----------------------------------------------------------------------##
+## Second: reproductive output rate and cumulative reproductive output ###
+#-----------------------------------------------------------------------##
+#
+### Reproductive output scaling with mass, with data from Barneche et al. 2018 Science ####
+### It appears that the formula for a generalised intercept is (from his Supp Mat eq 2:6) ####
+### Int fecundity.mass * Int egg-energy.egg-vol * (Int egg-vol.mas ^ slope egg-energy.egg-vol) ####
+### the slope of the reproductive energety.mass is from Scarus psittacus. Converted to mass ####
+### using the relationship of 23.46 J/mg of dry weight and dry weight = 0.25 * wet weight ####
+### Size at maturity for Scarus psittacus (FishBase) is 10.5 cm TL#
+#
+### Combining intercepts and slope for estimating energy reproductive output ####
+intf <- 2.93 * 2.15 * 0.15#
+slf <- 1.18 + 0.14 * 0.77#
+### Converting from joules to grams wet weight ###
+### If 23.46 J/mg dry weight, there's (23.46 * 0.25) * 1000 J/g wet weight#
+conversion <- (23.46 * 0.25) * 1000#
+#
+### Estimating mass reproductive rate ####
+dfmrepJ <- exp (intf * (log (mvec) ^ slf))#
+dfmrep <- ifelse (is.na (dfmrepJ), 0, dfmrepJ)  / conversion#
+	dfmrep [lvec < 10.5] <- 0#
+#
+### Cumulative reproductive output ####
+mrep <- cumsum (dfmrep)#
+#
+### Not taking into account spawning frequency, axis should not be interpreted ####
+#--------------------------------------------------------------##
+## Third: mortality rate and cumulative mortality probability ###
+#--------------------------------------------------------------##
+#
+## From Pauly (1980)'s equation to estimate Z ###
+temp <- 29#
+zy <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))#
+zd <- zy / 365#
+#
+## Proportional mortality per year and per day ###
+my <- 1 - exp (-zy)#
+md <- 1 - exp (-zd)#
+## Function for cumulative mortality ###
+mf <- function (t, z, t0) {#
+	 1 - exp (-z * (t - t0))#
+}#
+#
+cummor <- mf (tf, zy, t0f)#
+## Mortality experience at each time ###
+dfmor <- c (diff (cummor), 0)#
+#cummorabs <- dfmor * tf#
+#
+plot (tf, cummor, type = 'l')#
+plot (lvec, cummor, type = 'l')#
+lines (lvec, rescale (dfmor, range (cummor)), lty = 'dashed')
+dfmor
+sum(dfmor)
+zy
+exp(-zy)
+tf
+tf [tf > 0 & tf < 1]
+a=tf [tf > 0 & tf < 1]
+a=which (tf > 0 & tf < 1)
+a
+dfmor[a]
+sum(dfmor[a])
+1-cummor
+round (1 - cummor, 2)
+round (1 - cummor, 3)
+tf
+cummor
+dfmor
+plot (tf, cummor, type = 'l')
+plot (lvec, cummor, type = 'l')
+plot (mvec, cummor, type = 'l')
+lines (mvec, rescale (dfmor, range (cummor)), lty = 'dashed')
+library (FSA)#
+library (scales)#
+library (png)#
+#############################################################
+###### Figure 2: Productivity at the individual level #######
+#############################################################
+#
+vbf <- vbFuns ("typical")#
+#
+#----------------------------------------------------##
+## First: somatic growth rate and cumulative growth ###
+#----------------------------------------------------##
+#
+### Growth and length-weight parameters of a fish (Scarus frenatus from lizard_traits.csv) ####
+Linff <- 29.5#
+kf <- 0.448#
+t0f <- -0.1 ## est#
+af <- 0.0166#
+bf <- 3.07#
+#
+### Age vector ####
+tf <- c (seq (-0.1, 20, 0.01))#
+#
+### Length and mass vectors ####
+lvec <- vbf (tf, Linff, kf, t0f)#
+mvec <- af * (lvec ^ bf)#
+### Calculating growth rates (derivatives) ####
+dfmvec <- c (diff (mvec), 0)#
+#-----------------------------------------------------------------------##
+## Second: reproductive output rate and cumulative reproductive output ###
+#-----------------------------------------------------------------------##
+#
+### Reproductive output scaling with mass, with data from Barneche et al. 2018 Science ####
+### It appears that the formula for a generalised intercept is (from his Supp Mat eq 2:6) ####
+### Int fecundity.mass * Int egg-energy.egg-vol * (Int egg-vol.mas ^ slope egg-energy.egg-vol) ####
+### the slope of the reproductive energety.mass is from Scarus psittacus. Converted to mass ####
+### using the relationship of 23.46 J/mg of dry weight and dry weight = 0.25 * wet weight ####
+### Size at maturity for Scarus psittacus (FishBase) is 10.5 cm TL#
+#
+### Combining intercepts and slope for estimating energy reproductive output ####
+intf <- 2.93 * 2.15 * 0.15#
+slf <- 1.18 + 0.14 * 0.77#
+### Converting from joules to grams wet weight ###
+### If 23.46 J/mg dry weight, there's (23.46 * 0.25) * 1000 J/g wet weight#
+conversion <- (23.46 * 0.25) * 1000#
+#
+### Estimating mass reproductive rate ####
+dfmrepJ <- exp (intf * (log (mvec) ^ slf))#
+dfmrep <- ifelse (is.na (dfmrepJ), 0, dfmrepJ)  / conversion#
+	dfmrep [lvec < 10.5] <- 0#
+#
+### Cumulative reproductive output ####
+mrep <- cumsum (dfmrep)#
+#
+### Not taking into account spawning frequency, axis should not be interpreted ####
+#--------------------------------------------------------------##
+## Third: mortality rate and cumulative mortality probability ###
+#--------------------------------------------------------------##
+#
+## From Pauly (1980)'s equation to estimate Z ###
+temp <- 29#
+zy <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))#
+zd <- zy / 365#
+#
+## Proportional mortality per year and per day ###
+my <- 1 - exp (-zy)#
+md <- 1 - exp (-zd)#
+## Function for cumulative mortality ###
+mf <- function (t, z, t0) {#
+	 1 - exp (-z * (t - t0))#
+}#
+#
+cummor <- mf (tf, zy, t0f)#
+## Mortality experience at each time ###
+dfmor <- c (diff (cummor), 0)#
+#cummorabs <- dfmor * tf#
+#
+plot (tf, cummor, type = 'l')#
+plot (lvec, cummor, type = 'l')#
+lines (lvec, rescale (dfmor, range (cummor)), lty = 'dashed')#
+#
+#----------------------------------------------------##
+## Fourth: Preparing for plotting the relationships ###
+#----------------------------------------------------##
+#
+# Colours for curves and circles ###
+col <- c ('#3282FB', '#FD5D44')#
+colc <- c ('#6EB387', '#A1BE56', '#D3B33F')#
+#
+thr <- c (tf[which.max (dfmvec)], tf [which (mvec > 0.945 * max (mvec)) [1]], tf [which (mvec > 0.9985 * max (mvec)) [1]])#
+thrl <- c (tf [which (mvec > rescale (dfmvec, range (mvec))) [1]], tf [which (mvec > 0.99 * max (mvec)) [1]])#
+#
+### Figure showing age-specific growth and growth rate, reproductive output and reproductive rate ####
+#
+plotage <- function (x, y, rate.y, xlab = 'Age', ylab, mgp = c (0.5, 0.5,0), lwd = 1, thrl, lwdf = 0.25,...) {#
+	dy <- rescale (rate.y, range (y))#
+	mid <- (max (y) - min (y)) * 0.6#
+	plot (x, y, type = 'l', xlab = xlab, ylab = ylab, mgp = mgp, xaxt = 'n', yaxt = 'n',lwd = lwd, ...)#
+		lines (x, dy, lty = 'dotted', lwd = lwd*lwdf, ...)#
+		abline (v = thrl, lwd = 0.5, col = 'grey25')#
+		#points (x = thr, y = rep (mid, length (thr)), pch = 16, cex = 3, ...)#
+		#text (x = thr, y = rep (mid, length (thr)), labels = 1:length (thr), cex = 1.3, col = 'white')#
+}#
+#-----------------------------------##
+## Fifth: reading and plotting PNG ###
+#-----------------------------------##
+#
+### Reading PNG ####
+#fig1 <- readPNG ('growthind.png')#
+#
+### Layout and par ####
+#mat <- matrix (c (1,2,3,3), nrow = 2, ncol = 2)#
+#layout (mat, widths = c (1.5,1))#
+#layout.show (3)#
+#
+#pdf ('indplot.pdf', width = 5, height = 6)#
+par (mfrow = c (2,1), mar = c (1,2,1,1), oma = c (1,0,0,0), xpd = F)#
+#
+### Plotting ####
+plotage (tf, mvec, dfmvec, ylab = 'Body mass', col = col[1], lwd = 5, thrl = thrl, xlab = '')#
+par (xpd = NA)#
+points (x = thr, y = rep (-0.13*max(mvec),3), pch = 16, cex = 3, col = colc)#
+		text (x = thr, y = rep (-0.13*max(mvec), 3), labels = 1:length (thr), cex = 1.3, col = 'black')#
+par (xpd = F)#
+plotage (tf, mrep, dfmrep, ylab = 'Reproductive output', col = col[2], thrl = thrl, lwd = 5, xlab = '')#
+mtext (text = 'Age', side = 1, outer = T, line = -0.5)#
+#
+#dev.off ()#
+#
+#par (mar = c (0,0,0,0.5))#
+#plot (NULL, xlim = c (0, dim (fig1)[2]), ylim = c(0, dim(fig1)[1]), xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n')#
+#rasterImage (fig1, 0,0,dim (fig1)[2],dim(fig1)[1])
+load("/Volumes/Renato PhD/Doutorado/Chapters/Ch5 Review on fish productivity/CreatingPKG")
+getwd()
+library (devtools)
+devtools::create(file.path (getwd (), "/rfishprod")
+)
+?creat
+?create
+?devtools::create
+?devtools
+devtools::create("path/to/package/pkgname")
+library (devtools)
+devtools::create("path/to/package/pkgname")
+??devtools::create
+file.path (getwd (), "/rfishprod")
+file.path (getwd (), "rfishprod")
+devtools::create(file.path (getwd (), "rfishprod"))
+?create
+devtools:::create(file.path (getwd (), "/rfishprod"))
+devtools:::create
+devtools:::create("path/to/package/pkgname")
+library (devtools)#
+library (usethis)#
+library (roxygen2)#
+library (tidyverse)#
+library (rmarkdown)#
+##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!###
+## TO DO LIST (on 16 July 2019) on 28 May 2020					###
+## --Add tests													###
+## --Further fill in package documentation						###
+## --Add vignette (simplify the Readme file and basically		###
+##		that will become the vignette, although plotting the	###
+##		Suppl Fig from the Funct Ecol paper would be nice)		###
+## --Fix xgboost parameters use									###
+##																###
+##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!###
+## A path for the package and creating the skeleton ###
+path <- file.path (getwd (), 'rfishprod')#
+#usethis::create_package (path)#
+setwd (path)#
+## Loading everything ###
+devtools::load_all()#
+#
+## Active project ###
+proj_activate(path)#
+#
+## Altering description file ###
+use_description (fields = list (#
+		Package = 'rfishprod',#
+		Version = '0.0.0.9100',#
+		Title = 'Estimating Reef Fish Productivity',#
+		`Authors@R` = 'person ("Renato", "Morais", email = "renatomoraisaraujo@gmail.com",#
+							  role = c ("aut", "cre"), #
+							  comment = c(ORCID = "https://orcid.org/0000-0003-4652-6676"))',#
+		Description = 'Implements a framework to generate individual-level estimates of fish productivity, with a focus on reef fishes. This individual approach works by combining estimates of somatic growth through the von Bertalanffy Growth Model, and deterministic or stochastic natural mortality using instantaneous mortality rates.',#
+		Depends = 'R (>= 2.10)',#
+		URL = 'https://github.com/renatomoraisaraujo/rfishprod',#
+		LazyData = TRUE))
+use_mit_license(name = "Renato Morais")
+use_package('xgboost', 'Imports')#
+use_package('scales', 'Imports')#
+use_package('stats', 'Imports')#
+use_package('rlang', 'Imports')
+findir <- file.path (sub ("Ch5 Review on fish productivity/rfishprod", 'Ch1 Fundamental drivers of fish growth', getwd()))#
+#
+db <- read.csv (file.path (findir, '1st - Obtaining and processing database/db.csv')) %>%#
+		select (-Schooling, -FormFactor, -pelnpp) %>%#
+		rename (Position = 'Movimentation')#
+#
+db <- tidytrait (db, db)#
+use_data (db, overwrite = TRUE)#
+# Creating a dataset for a reproducible example ##
+repdata <- data.frame (MaxSizeTL = sample (db$MaxSizeTL, 10),#
+					Diet = sample (db$Diet, 10),#
+					Position = sample (db$Position, 10),#
+					sstmean = rnorm (10, mean = 25, sd = 3),#
+					Method = 'Otolth') %>%#
+				mutate (Size = as.integer(runif (min = 0.2, 10) * MaxSizeTL),#
+						a = rnorm (10, mean = 0.01, sd = 0.003),#
+						b = rnorm (10, mean = 3, sd = 0.1))#
+use_data (repdata, internal = TRUE, overwrite = TRUE)#
+## And predKmax model parameters ###
+xgboostparams <- readRDS(file.path (findir, '5th - Cross validating and predicting/xgboostparams.rds'))#
+#
+use_data (xgboostparams, internal = TRUE)
+?use_data
+use_data (xgboostparams, repdata, internal = TRUE, overwrite = TRUE)
+rm(repdata)
+rm(db)
+rm(xgboostparams)
+devtools::load_all()
+xgboostparams
+repdata
+head(db)
+getwd()
+pwd
+render ('README.Rmd')
