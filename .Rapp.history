@@ -1,12 +1,3 @@
-zd <- zy / 365
-zd
-my <- 1 - exp (-zy)
-my
-md <- 1 - exp (-zd)
-md
-mvec
-my
-md
 vbf
 tf
 lvec
@@ -824,11 +815,173 @@ devtools::create(file.path (getwd (), "rfishprod"))
 devtools:::create(file.path (getwd (), "/rfishprod"))
 devtools:::create
 devtools:::create("path/to/package/pkgname")
+library (devtools)
+devtools::load_all()
+pkgpath <- file.path (getwd(), 'rfishprod')
+pkgpath
+devtools::load_all(pkgpath)
+repdata
+head(db)
+?install
+library (devtools)#
+#
+pkgpath <- file.path (getwd(), 'rfishprod')#
+#
+#devtools::load_all(pkgpath)#
+devtools::install(pkgpath)
+pkgpath
+?install
+as.package(pkgpath)
+devtools::install(as.package(pkgpath))
+library (rfishprod)
+repdata
+db
+rfishprod:::repdata
+db
+data('db')
+db
+ls()
+rm(db)
+db
+data(db)
+ls()
+.onLoad
+environment()
+parent.env(environment())
+utils::data(db, envir=parent.env(environment()))
+utils::data(db, package = 'rfishprod', envir=parent.env(environment()))
+head(db)
+rm(db)
+data(db, envir = environment())
+head(db)
+rm(db)
+data(db, package = 'rfishprod')
+head(db)
+rm(db)
+getwd()
+remove.packages('rfishprod')
+library (devtools)
+pkgpath <- file.path (getwd(), 'rfishprod')
+devtools::install(as.package(pkgpath))
+library (rfishprod)
+ls()
+head(db)
+repdata
+rfishprod:::repdata
+(repdata <- rfishprod:::repdata)
+repdata <- tidytrait (repdata, db)
+remove.packages('rfishprod')
+library (devtools)
+pkgpath <- file.path (getwd(), 'rfishprod')
+devtools::install(as.package(pkgpath))
+library (rfishprod)
+ls()
+remove.packages('rfishprod')
+library (devtools)#
+#
+pkgpath <- file.path (getwd(), 'rfishprod')#
+#
+#devtools::load_all(pkgpath)#
+devtools::install(as.package(pkgpath))
+library (rfishprod)
+ls()
+(repdata <- rfishprod:::repdata)
+repdata <- tidytrait (repdata, db)
+fmod <- formula (~ sstmean + MaxSizeTL + Diet + Position + Method)
+xgboostparams
+remove.packages('rfishprod')
+library (devtools)#
+#
+pkgpath <- file.path (getwd(), 'rfishprod')#
+#
+#devtools::load_all(pkgpath)#
+devtools::install(as.package(pkgpath))#
+#
+library (rfishprod)
+ls()
+(repdata <- rfishprod:::repdata)#
+#
+# Getting levels ready ##
+repdata <- tidytrait (repdata, db)#
+#
+# Formula from Morais and Bellwood (2018) ##
+fmod <- formula (~ sstmean + MaxSizeTL + Diet + Position + Method)#
+#
+# Predicting Kmax per se (in reality, use 100s to 1000 iterations) ##
+datagr <- predKmax (repdata, #
+                    dataset = db, #
+					fmod = fmod, #
+					niter = 10, #
+					return = 'pred')
+predKmax
+rlang::.data
+remove.packages('rfishprod')
+library (devtools)#
+#
+pkgpath <- file.path (getwd(), 'rfishprod')#
+#
+#devtools::load_all(pkgpath)#
+devtools::install(as.package(pkgpath))
+library (rfishprod)
+ls()
+predKmax
+(repdata <- rfishprod:::repdata)
+repdata <- tidytrait (repdata, db)
+fmod <- formula (~ sstmean + MaxSizeTL + Diet + Position + Method)
+datagr <- predKmax (repdata, #
+                    dataset = db, #
+					fmod = fmod, #
+					niter = 10, #
+					return = 'pred')
+datagr
+datagr <- datagr$pred
+datagr$Md <- with (datagr, #
+					predM (Lmeas = Size, #
+						     Lmax = MaxSizeTL, #
+						     Kmax = Kmax, #
+						     method = 'Gislason'))
+with (datagr, applyVBGF (Lmeas = Size, #
+						 Lmax = MaxSizeTL, #
+						 Kmax = Kmax))
+datagr$Size
+sogr <- with(datagr, somaGain (a = a,#
+							   b = b,#
+							   Lmeas = Size, #
+				 			   Lmax = MaxSizeTL, #
+						       Kmax = Kmax))
+sogr
+applyMstoch (datagr$Md)
+loss <- with(datagr, somaLoss (M = Md,#
+							   Lmeas = Size,#
+							   a = a,#
+							   b = b))
+loss
+with(datagr, somaGain (a = a,#
+							   b = b,#
+							   Lmeas = Size, #
+				 			   Lmax = MaxSizeTL, #
+						       Kmax = Kmax))
+with(datagr, somaLoss (M = Md,#
+							   Lmeas = Size,#
+							   a = a,#
+							   b = b))
+rmarkdown::render ('README.Rmd')
 library (devtools)#
 library (usethis)#
 library (roxygen2)#
 library (tidyverse)#
-library (rmarkdown)
+library (rmarkdown)#
+##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!###
+## TO DO LIST (on 16 July 2019) on 28 May 2020					###
+## --Add tests													###
+## --Further fill in package documentation						###
+## --Add vignette (simplify the Readme file and basically		###
+##		that will become the vignette, although plotting the	###
+##		Suppl Fig from the Funct Ecol paper would be nice)		###
+## --Fix xgboost parameters use									###
+##																###
+##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!###
+## A path for the package and creating the skeleton ###
 path <- file.path (getwd (), 'rfishprod')#
 #usethis::create_package (path)#
 setwd (path)#
@@ -836,140 +989,5 @@ setwd (path)#
 devtools::load_all()#
 #
 ## Active project ###
-proj_activate(path)#
-#
-## Altering description file ###
-use_description (fields = list (#
-		Package = 'rfishprod',#
-		Version = '0.0.0.9100',#
-		Title = 'Estimating Reef Fish Productivity',#
-		`Authors@R` = 'person ("Renato", "Morais", email = "renatomoraisaraujo@gmail.com",#
-							  role = c ("aut", "cre"), #
-							  comment = c(ORCID = "https://orcid.org/0000-0003-4652-6676"))',#
-		Description = 'Implements a framework to generate individual-level estimates of fish productivity, with a focus on reef fishes. This individual approach works by combining estimates of somatic growth through the von Bertalanffy Growth Model, and deterministic or stochastic natural mortality using instantaneous mortality rates.',#
-		Depends = 'R (>= 3.5)',#
-		URL = 'https://github.com/renatomoraisaraujo/rfishprod',#
-		LazyData = FALSE))
-use_mit_license(name = "Renato Morais")
-use_package('xgboost', 'Depends')#
-use_package('scales', 'Imports')#
-use_package('stats', 'Imports')#
-use_package('rlang', 'Imports')
-use_r ('db')
-findir <- file.path (sub ("Ch5 Review on fish productivity/rfishprod", 'Ch1 Fundamental drivers of fish growth', getwd()))
-devtools::document()
-devtools::load_all()
-devtools::check()
-ls()
-ls(loadNamespace('rfishprod'))
-use_r ('predicting_growth')
-use_r ('auxiliary')
-.onLoad
-?data
-devtools::check()
-?data
-use_description (fields = list (#
-		Package = 'rfishprod',#
-		Version = '0.0.0.9100',#
-		Title = 'Estimating Reef Fish Productivity',#
-		`Authors@R` = 'person ("Renato", "Morais", email = "renatomoraisaraujo@gmail.com",#
-							  role = c ("aut", "cre"), #
-							  comment = c(ORCID = "https://orcid.org/0000-0003-4652-6676"))',#
-		Description = 'Implements a framework to generate individual-level estimates of fish productivity, with a focus on reef fishes. This individual approach works by combining estimates of somatic growth through the von Bertalanffy Growth Model, and deterministic or stochastic natural mortality using instantaneous mortality rates.',#
-		Depends = 'R (>= 3.5)',#
-		URL = 'https://github.com/renatomoraisaraujo/rfishprod',#
-		LazyData = FALSE))
-use_mit_license(name = "Renato Morais")
-use_package('xgboost', 'Depends')#
-use_package('scales', 'Imports')#
-use_package('stats', 'Imports')#
-use_package('rlang', 'Imports')#
-use_packages('utils', 'Imports')
-use_package('utils', 'Imports')
-devtools::load_all()
-devtools::check()
-devtools::document()
-devtools::load_all()
-devtools::check()
-head(db)
-environment()
-ls()
-ls(loadNamespace='rfishprod')
-ls(loadNamespace('rfishprod'))
-rm(db)
-repdata
-xgboostparams
-detach(xgboostparams)
-detach('xgboostparams')
-use_r ('auxiliary')
-?vegan
-library(vegan)
-library(cars)
-?iris
-iris
-?data
-data(db)
-dataset <- data (db)
-head(dataset)
-dataste
-dataset
-head(db)
-ls()
-devtools::check()
-list.files()
-load('DESCRIPTION')
-read.txt('DESCRIPTION')
-apropos('read')
-aff <- read.file ('DESCRIPTION')
-aff <- read_file ('DESCRIPTION')
-aff
-packageVersion('rfishprod')
-devtools::document()
-devtools::document()
-devtools::document()
-devtools::document()
-devtools::check()
-?packageVersion
-?packageStartupMessage
-devtools::document()
-devtools::check()
-render ('README.Rmd')
-repdata
-repdata <- tidytrait (repdata, db)
-fmod <- formula (~ sstmean + MaxSizeTL + Diet + Position + Method)
-datagr <- predKmax (repdata, dataset = db,#
-                    fmod = fmod,#
-                    params = xgboostparams,#
-                    niter = 10,#
-                    return = 'pred')
-datagr <- datagr$pred
-datagr$Md <- with (datagr,#
-                   predM (Lmeas = Size,#
-                          Lmax = MaxSizeTL,#
-                          Kmax = Kmax,#
-                          Lr = 1,#
-                          temp = sstmean,#
-                          method = 'Gislason'))
-datagr$Md
-datagr$Md <- with (datagr,#
-                   predM (Lmeas = Size,#
-                          Lmax = MaxSizeTL,#
-                          Kmax = Kmax,#
-                          method = 'Gislason'))
-datagr$Md
-with (datagr, applyVBGF (Lmeas = Size,#
-                         Lmax = MaxSizeTL,#
-                         Kmax = Kmax))
-sogr <- with(datagr, somaGain (a = a,#
-                               b = b,#
-                               Lmeas = Size,#
-                               Lmax = MaxSizeTL,#
-                               Kmax = Kmax))
-sogr
-applyMstoch (datagr$Md)
-loss <- with(datagr, somaLoss (M = Md,#
-                               Lmeas = Size,#
-                               a = a,#
-                               b = b))
-loss
+proj_activate(path)
 rmarkdown::render ('README.Rmd')

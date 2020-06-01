@@ -41,9 +41,9 @@ repdata <- tidytrait (repdata, db)
 fmod <- formula (~ sstmean + MaxSizeTL + Diet + Position + Method)
 
 # Predicting Kmax, the standardised VBGF parameter (Recommendation: use 100s to 1000s iterations) #
-datagr <- predKmax (repdata, dataset = db,
+datagr <- predKmax (repdata, 
+                    dataset = db,
                     fmod = fmod,
-                    params = xgboostparams,
                     niter = 10,
                     return = 'pred')
 
@@ -67,21 +67,21 @@ with (datagr, applyVBGF (Lmeas = Size,
 datagr$Size
 
 # Estimating gross somatic growth (g) #
-sogr <- with(datagr, somaGain (a = a,
-                               b = b,
-                               Lmeas = Size,
-                               Lmax = MaxSizeTL,
-                               Kmax = Kmax))
+with(datagr, somaGain (a = a,
+                       b = b,
+                       Lmeas = Size,
+                       Lmax = MaxSizeTL,
+                       Kmax = Kmax))
                               
 # Applying stochastic mortality #
 applyMstoch (datagr$Md)
 
 
 # Alternatively, estimating per capita mass loss due to mortality #
-loss <- with(datagr, somaLoss (M = Md,
-                               Lmeas = Size,
-                               a = a,
-                               b = b))
+with(datagr, somaLoss (M = Md,
+                       Lmeas = Size,
+                       a = a,
+                       b = b))
 ```
 
 ## Citation

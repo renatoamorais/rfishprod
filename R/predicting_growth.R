@@ -28,22 +28,26 @@
 
 predKmax <- function(traits, dataset, fmod, params = NULL, niter, nrounds = 150, verbose = 0, print_every = 1000, return = c('pred', 'relimp', 'models'), lowq = 0.25, uppq = 0.75) {
 
-if (identical (dataset, rlang::.data)) {
+
+if (missing (dataset)) {
+  dataset <- db
+}
+
+
+if (is.null (params)) {
+
+  if (identical (dataset, db)) {
 	
 	params <- xgboostparams
 	
-} else if (is.null (params)) {
+  } else {
 	
 	params <- list ()
 	warning('Consider optimising xgboost parameters with xgb.train')
 	
+  }
 }
 
-if (missing (dataset)) {
-	
-	dataset <- db
-	
-}
 	
 modmatnd <- stats::model.matrix(fmod, data = traits) [, -1]
 modmat <- stats::model.matrix(fmod, dataset) [, -1]
