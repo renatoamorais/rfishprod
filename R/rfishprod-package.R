@@ -1,8 +1,19 @@
 #' @keywords internal
 "_PACKAGE"
+#' @name rfishprod-package
+#' @section \code{rfishprod} functions:
 
-# The following block is used by usethis to automatically manage
-# roxygen namespace tags. Modify with care!
-## usethis namespace: start
-## usethis namespace: end
+#' Use the functions \code{predKmax} and \code{predM} to predict growth and mortality trajectories, respectively. Then, use \code{somaGain}, \code{applyMstoch} and \code{somaLoss} to position your fishes in these trajectories and estimate components of productivity!
+#' @docType package
+
+.onLoad <- function(libname, pkgname) {
+  utils::data("db", package=pkgname, envir=parent.env(environment()))
+}
+
+
+.onAttach <- function(libname, pkgname) {
+  v <- utils::packageVersion(pkgname)
+  packageStartupMessage(paste0("This is rfishprod v",v,'. Please, note that this is still an alpha release.'))
+}
+
 NULL

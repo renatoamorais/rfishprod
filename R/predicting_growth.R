@@ -4,7 +4,7 @@
 #' @description This function uses xgboost to predict Kmax, a standardised von Bertlanffy Growth parameter, for reef fishes. xgboost is an extremely efficient regression tree boosting system. As default, the function uses the dataset provided by Morais and Bellwood (2018), but other datasets can be supplied. Prediction is attained after executing bootstrapping xgboost estimates. Xgboost predictions are ON AVERAGE very accurate and precise, but are somewhat unstable. Because of that, I recomment any predictions to be bootstrapped at least hundreds of times (I have been using 1000 iterations, which takes something in between a few and many minutes, depending on the machine).
 #' 
 #' @param traits data frame, intuitively, the trait object for which predictions will be made
-#' @param dataset reference data frame, intuitively the db dataset object from which predictions will be made
+#' @param dataset reference data frame from which predictions will be made. If not supplied, will use the the db dataset object from the reference above 
 #' @param fmod model formula, should be specified
 #' @param params set of parameters to optimise the performance of xgboost. 
 #' @param niter number of xgboost models run for the bootstrap procedure
@@ -23,6 +23,7 @@
 #' @references Morais, R.A., and Bellwood, D.R. (2018). Global drivers of reef fish growth. Fish and Fisheries. 19, 874–889. doi:10.1111/faf.12297
 #'
 #' @export
+#' @import xgboost
 
 
 predKmax <- function(traits, dataset, fmod, params = NULL, niter, nrounds = 150, verbose = 0, print_every = 1000, return = c('pred', 'relimp', 'models'), lowq = 0.25, uppq = 0.75) {
@@ -35,6 +36,12 @@ if (identical (dataset, rlang::.data)) {
 	
 	params <- list ()
 	warning('Consider optimising xgboost parameters with xgb.train')
+	
+}
+
+if (missing (dataset)) {
+	
+	dataset <- db
 	
 }
 	

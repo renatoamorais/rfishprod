@@ -21,7 +21,7 @@ predKmax(
 \arguments{
 \item{traits}{data frame, intuitively, the trait object for which predictions will be made}
 
-\item{dataset}{reference data frame, intuitively the db dataset object from which predictions will be made}
+\item{dataset}{reference data frame from which predictions will be made. If not supplied, will use the the db dataset object from the reference above}
 
 \item{fmod}{model formula, should be specified}
 

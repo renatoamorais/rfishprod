@@ -22,8 +22,8 @@ a tidied up traits data frame with factors ready to be used to predict growth
 Makes sure that the trait object (species for which to predict growth) has factors perfectly matching the db object (species from which to predict growth)
 }
 \examples{
-dataset <- db
-levels (dataset$Diet)
+data (db)
+levels (db$Diet)
 
 }
 \references{

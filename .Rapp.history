@@ -1,91 +1,3 @@
-########################################################################
-#### Conceptual figure paper frameworkd of productivity estimates ######
-################################################ May-2018 ##############
-#
-library (FSA)#
-library (scales)#
-#
-vbf <- vbFuns ("typical")#
-#----------------------------------------------------##
-## First: somatic growth rate and cumulative growth ###
-#----------------------------------------------------##
-#
-### Growth and length-weight parameters of a fish (Scarus frenatus from lizard_traits.csv) ####
-Linff <- 29.5#
-kf <- 0.448#
-t0f <- -0.1 ## est#
-af <- 0.0166#
-bf <- 3.07#
-#
-### Age vector ####
-tf <- c (seq (-0.1, 20, 0.01))#
-#
-### Length and mass vectors ####
-lvec <- vbf (tf, Linff, kf, t0f)#
-mvec <- af * (lvec ^ bf)#
-### Calculating growth rates (derivatives) ####
-dfmvec <- c (diff (mvec), 0)#
-#-----------------------------------------------------##
-## Second: somatic growth rate and cumulative growth ###
-#-----------------------------------------------------##
-#
-### Reproductive output scaling with mass, with data from Barneche et al. 2018 Science ####
-### It appears that the formula for a generalised intercept is (from his Supp Mat eq 2:6) ####
-### Int fecundity.mass * Int egg-energy.egg-vol * (Int egg-vol.mas ^ slope egg-energy.egg-vol) ####
-### the slope of the reproductive energety.mass is from Scarus psittacus. Converted to mass ####
-### using the relationship of 23.46 J/mg of dry weight and dry weight = 0.25 * wet weight ####
-### Size at maturity for Scarus psittacus (FishBase) is 10.5 cm TL#
-#
-### Combining intercepts and slope for estimating energy reproductive output ####
-intf <- 2.93 * 2.15 * 0.15#
-slf <- 1.18 + 0.14 * 0.77#
-### Converting from joules to grams wet weight ###
-### If 23.46 J/mg dry weight, there's (23.46 * 0.25) * 1000 J/g wet weight#
-conversion <- (23.46 * 0.25) * 1000#
-#
-### Estimating mass reproductive rate ####
-dfmrepJ <- exp (intf * (log (mvec) ^ slf))#
-dfmrep <- ifelse (is.na (dfmrepJ), 0, dfmrepJ)  / conversion#
-	dfmrep [lvec < 10.5] <- 0#
-#
-### Cumulative reproductive output ####
-mrep <- cumsum (dfmrep)#
-#
-### Not taking into account spawning frequency, axis should not be interpreted ####
-### Figure showing age-specific growth and growth rate, reproductive output and reproductive rate ####
-#
-plotage <- function (x, y, rate.y, xlab = 'Age', ylab, mgp = c (0.5, 0.5,0),...) {#
-	dy <- rescale (rate.y, range (y))#
-	plot (x, y, type = 'l', xlab = xlab, ylab = ylab, mgp = mgp, xaxt = 'n', yaxt = 'n',...)#
-		lines (x, dy, lty = 'dashed',...)#
-}#
-#
-par (mfrow = c (1,2), mar = c (2,2,1,1))#
-plotage (tf, mvec, dfmvec, ylab = 'Body mass')#
-plotage (tf, mrep, dfmrep, ylab = 'Reproductive output')#
-## 1mg = 23.46 J#
-## 30kg
-temp <- 29#
-#
-z <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp))
-z <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))
-z
-s <- exp (-z)
-s
-zd <- zy / 365
-zy <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))
-zd <- zy / 365
-sy <- exp (-zy)
-sd <- exp (-zd)
-sd
-my <- 1 - exp (-zy)
-md <- 1 - exp (-zd)
-md
-Linff
-Linff = 6
-kf = 2.4
-zy <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))
-zy
 zd <- zy / 365
 zd
 my <- 1 - exp (-zy)
@@ -916,18 +828,7 @@ library (devtools)#
 library (usethis)#
 library (roxygen2)#
 library (tidyverse)#
-library (rmarkdown)#
-##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!###
-## TO DO LIST (on 16 July 2019) on 28 May 2020					###
-## --Add tests													###
-## --Further fill in package documentation						###
-## --Add vignette (simplify the Readme file and basically		###
-##		that will become the vignette, although plotting the	###
-##		Suppl Fig from the Funct Ecol paper would be nice)		###
-## --Fix xgboost parameters use									###
-##																###
-##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!###
-## A path for the package and creating the skeleton ###
+library (rmarkdown)
 path <- file.path (getwd (), 'rfishprod')#
 #usethis::create_package (path)#
 setwd (path)#
@@ -946,45 +847,129 @@ use_description (fields = list (#
 							  role = c ("aut", "cre"), #
 							  comment = c(ORCID = "https://orcid.org/0000-0003-4652-6676"))',#
 		Description = 'Implements a framework to generate individual-level estimates of fish productivity, with a focus on reef fishes. This individual approach works by combining estimates of somatic growth through the von Bertalanffy Growth Model, and deterministic or stochastic natural mortality using instantaneous mortality rates.',#
-		Depends = 'R (>= 2.10)',#
+		Depends = 'R (>= 3.5)',#
 		URL = 'https://github.com/renatomoraisaraujo/rfishprod',#
-		LazyData = TRUE))
+		LazyData = FALSE))
 use_mit_license(name = "Renato Morais")
-use_package('xgboost', 'Imports')#
+use_package('xgboost', 'Depends')#
 use_package('scales', 'Imports')#
 use_package('stats', 'Imports')#
 use_package('rlang', 'Imports')
-findir <- file.path (sub ("Ch5 Review on fish productivity/rfishprod", 'Ch1 Fundamental drivers of fish growth', getwd()))#
-#
-db <- read.csv (file.path (findir, '1st - Obtaining and processing database/db.csv')) %>%#
-		select (-Schooling, -FormFactor, -pelnpp) %>%#
-		rename (Position = 'Movimentation')#
-#
-db <- tidytrait (db, db)#
-use_data (db, overwrite = TRUE)#
-# Creating a dataset for a reproducible example ##
-repdata <- data.frame (MaxSizeTL = sample (db$MaxSizeTL, 10),#
-					Diet = sample (db$Diet, 10),#
-					Position = sample (db$Position, 10),#
-					sstmean = rnorm (10, mean = 25, sd = 3),#
-					Method = 'Otolth') %>%#
-				mutate (Size = as.integer(runif (min = 0.2, 10) * MaxSizeTL),#
-						a = rnorm (10, mean = 0.01, sd = 0.003),#
-						b = rnorm (10, mean = 3, sd = 0.1))#
-use_data (repdata, internal = TRUE, overwrite = TRUE)#
-## And predKmax model parameters ###
-xgboostparams <- readRDS(file.path (findir, '5th - Cross validating and predicting/xgboostparams.rds'))#
-#
-use_data (xgboostparams, internal = TRUE)
-?use_data
-use_data (xgboostparams, repdata, internal = TRUE, overwrite = TRUE)
-rm(repdata)
-rm(db)
-rm(xgboostparams)
+use_r ('db')
+findir <- file.path (sub ("Ch5 Review on fish productivity/rfishprod", 'Ch1 Fundamental drivers of fish growth', getwd()))
+devtools::document()
 devtools::load_all()
-xgboostparams
-repdata
+devtools::check()
+ls()
+ls(loadNamespace('rfishprod'))
+use_r ('predicting_growth')
+use_r ('auxiliary')
+.onLoad
+?data
+devtools::check()
+?data
+use_description (fields = list (#
+		Package = 'rfishprod',#
+		Version = '0.0.0.9100',#
+		Title = 'Estimating Reef Fish Productivity',#
+		`Authors@R` = 'person ("Renato", "Morais", email = "renatomoraisaraujo@gmail.com",#
+							  role = c ("aut", "cre"), #
+							  comment = c(ORCID = "https://orcid.org/0000-0003-4652-6676"))',#
+		Description = 'Implements a framework to generate individual-level estimates of fish productivity, with a focus on reef fishes. This individual approach works by combining estimates of somatic growth through the von Bertalanffy Growth Model, and deterministic or stochastic natural mortality using instantaneous mortality rates.',#
+		Depends = 'R (>= 3.5)',#
+		URL = 'https://github.com/renatomoraisaraujo/rfishprod',#
+		LazyData = FALSE))
+use_mit_license(name = "Renato Morais")
+use_package('xgboost', 'Depends')#
+use_package('scales', 'Imports')#
+use_package('stats', 'Imports')#
+use_package('rlang', 'Imports')#
+use_packages('utils', 'Imports')
+use_package('utils', 'Imports')
+devtools::load_all()
+devtools::check()
+devtools::document()
+devtools::load_all()
+devtools::check()
 head(db)
-getwd()
-pwd
+environment()
+ls()
+ls(loadNamespace='rfishprod')
+ls(loadNamespace('rfishprod'))
+rm(db)
+repdata
+xgboostparams
+detach(xgboostparams)
+detach('xgboostparams')
+use_r ('auxiliary')
+?vegan
+library(vegan)
+library(cars)
+?iris
+iris
+?data
+data(db)
+dataset <- data (db)
+head(dataset)
+dataste
+dataset
+head(db)
+ls()
+devtools::check()
+list.files()
+load('DESCRIPTION')
+read.txt('DESCRIPTION')
+apropos('read')
+aff <- read.file ('DESCRIPTION')
+aff <- read_file ('DESCRIPTION')
+aff
+packageVersion('rfishprod')
+devtools::document()
+devtools::document()
+devtools::document()
+devtools::document()
+devtools::check()
+?packageVersion
+?packageStartupMessage
+devtools::document()
+devtools::check()
 render ('README.Rmd')
+repdata
+repdata <- tidytrait (repdata, db)
+fmod <- formula (~ sstmean + MaxSizeTL + Diet + Position + Method)
+datagr <- predKmax (repdata, dataset = db,#
+                    fmod = fmod,#
+                    params = xgboostparams,#
+                    niter = 10,#
+                    return = 'pred')
+datagr <- datagr$pred
+datagr$Md <- with (datagr,#
+                   predM (Lmeas = Size,#
+                          Lmax = MaxSizeTL,#
+                          Kmax = Kmax,#
+                          Lr = 1,#
+                          temp = sstmean,#
+                          method = 'Gislason'))
+datagr$Md
+datagr$Md <- with (datagr,#
+                   predM (Lmeas = Size,#
+                          Lmax = MaxSizeTL,#
+                          Kmax = Kmax,#
+                          method = 'Gislason'))
+datagr$Md
+with (datagr, applyVBGF (Lmeas = Size,#
+                         Lmax = MaxSizeTL,#
+                         Kmax = Kmax))
+sogr <- with(datagr, somaGain (a = a,#
+                               b = b,#
+                               Lmeas = Size,#
+                               Lmax = MaxSizeTL,#
+                               Kmax = Kmax))
+sogr
+applyMstoch (datagr$Md)
+loss <- with(datagr, somaLoss (M = Md,#
+                               Lmeas = Size,#
+                               a = a,#
+                               b = b))
+loss
+rmarkdown::render ('README.Rmd')

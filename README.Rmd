@@ -40,8 +40,8 @@ To get [`devtools`](https://cran.r-project.org/web/packages/devtools/index.html)
 ```{r example, eval = F}
 library(rfishprod)
 
-# Check dataset repdata
-repdata
+# Check dataset repdata #
+(repdata <- rfishprod:::repdata)
 
 # Getting levels ready #
 repdata <- tidytrait (repdata, db)
@@ -49,50 +49,48 @@ repdata <- tidytrait (repdata, db)
 # Formula from Morais and Bellwood (2018) #
 fmod <- formula (~ sstmean + MaxSizeTL + Diet + Position + Method)
 
-# Predicting Kmax per se (in reality, use 100s to 1000 iterations) #
-datagr <- predKmax (repdata, 
-                    dataset = db, 
-					fmod = fmod, 
-					params = xgboostparams, 
-					niter = 10, 
-					return = 'pred')
+# Predicting Kmax, the standardised VBGF parameter (Recommendation: use 100s to 1000s iterations) #
+datagr <- predKmax (repdata, dataset = db,
+                    fmod = fmod,
+                    params = xgboostparams,
+                    niter = 10,
+                    return = 'pred')
 
 datagr <- datagr$pred
 
-# Predicting M #
-datagr$Md <- with (datagr, 
-					predM (Lmeas = Size, 
-						     Lmax = MaxSizeTL, 
-						     Kmax = Kmax, 
-						     Lr = 1, 
-						     temp = sstmean, 
-						     method = 'Function'))
+# Predicting M/Z: the instantaneous mortality rate (Recommendation: see help file for) #
+datagr$Md <- with (datagr,
+                   predM (Lmeas = Size,
+                          Lmax = MaxSizeTL,
+                          Kmax = Kmax,
+                          method = 'Gislason'))
 						   
 
-# Applying the growth trajectory, aka what's the size of the fish in the next day?#
-with (datagr, applyVBGF (Lmeas = Size, 
-						 Lmax = MaxSizeTL, 
-						 Kmax = Kmax))
+# Positioning your fish in their growth trajectory #
+# aka. what's the size they're supposed to have on the next day? #
+with (datagr, applyVBGF (Lmeas = Size,
+                         Lmax = MaxSizeTL,
+                         Kmax = Kmax))
 						 
-# Compare with the size the previosu day
+# Compare with their size on the previous day #
 datagr$Size
 
 # Estimating gross somatic growth (g) #
 sogr <- with(datagr, somaGain (a = a,
-							   b = b,
-							   Lmeas = Size, 
-				 			   Lmax = MaxSizeTL, 
-						       Kmax = Kmax))
+                               b = b,
+                               Lmeas = Size,
+                               Lmax = MaxSizeTL,
+                               Kmax = Kmax))
 						      
 # Applying stochastic mortality #
 applyMstoch (datagr$Md)
 
 
-# Alternatively, estimating per capita loss due to mortality #
+# Alternatively, estimating per capita mass loss due to mortality #
 loss <- with(datagr, somaLoss (M = Md,
-							   Lmeas = Size,
-							   a = a,
-							   b = b))
+                               Lmeas = Size,
+                               a = a,
+                               b = b))
 
 ```
 
@@ -100,7 +98,7 @@ loss <- with(datagr, somaLoss (M = Md,
 
 Please, if you're using `rfishprod`, the relevant citation for the package can be obtained from:
 
-```{r}
+```{r, eval = FALSE}
 citation("rfishprod")
 ```
 
