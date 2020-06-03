@@ -4,11 +4,7 @@
 \name{rfishprod-package}
 \alias{rfishprod}
 \alias{rfishprod-package}
-\alias{.onLoad}
 \title{rfishprod: Estimating Reef Fish Productivity}
-\usage{
-.onLoad(libname, pkgname)
-}
 \description{
 Implements a framework to generate individual-level estimates
     of fish productivity, with a focus on reef fishes. This individual
@@ -24,7 +20,7 @@ Use the functions \code{predKmax} and \code{predM} to predict growth and mortali
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/renatomoraisaraujo/rfishprod}
+  \item \url{https://github.com/renatoamorais/rfishprod}
 }
 
 }

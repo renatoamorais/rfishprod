@@ -24,7 +24,12 @@ devtools::install_github("renatoamorais/rfishprod")
 
 To get
 [`devtools`](https://cran.r-project.org/web/packages/devtools/index.html),
-simply use `install.packages("devtools")`
+simply use `install.packages("devtools")`.
+
+Although not a dependency, I recommend using R 3.6.3 or higher. This is
+mainly because [`xgboost`](https://CRAN.R-project.org/package=xgboost),
+the machine behind internal prediction, demands R 3.6.3 in its most
+recent version.
 
 ## Example
 

@@ -1,6 +1,6 @@
 Package: rfishprod
 Title: Estimating Reef Fish Productivity
-Version: 0.0.0.9100
+Version: 0.0.1
 Authors@R: 
     person(given = "Renato",
            family = "Morais",
@@ -13,9 +13,9 @@ Description: Implements a framework to generate individual-level estimates
     von Bertalanffy Growth Model, and deterministic or stochastic natural
     mortality using instantaneous mortality rates.
 License: MIT + file LICENSE
-URL: https://github.com/renatomoraisaraujo/rfishprod
+URL: https://github.com/renatoamorais/rfishprod
 Depends: 
-    R (>= 3.5),
+    R (>= 3.3.0),
     xgboost
 Encoding: UTF-8
 LazyData: true
