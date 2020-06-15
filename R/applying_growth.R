@@ -16,7 +16,7 @@
 #' @seealso \code{\link{predKmax}}, \code{\link{somaGain}}
 #'
 #' @references Depczynski, M., Fulton, C.J., Marnane, M.J., Bellwood, D.R. (2007). Life history patterns shape energy allocation among fishes on coral reefs. Oecologia 153, 111–120. doi:10.1007/s00442-007-0714-2
-#' @references Morais, R.A., and Bellwood, D.R. Quantifying fish productivity, an emergent tool for managing coral reef ecosystem services. Submitted
+#' @references Morais, R.A., and Bellwood, D.R. Principles for estimating fish productivity on coral reefs. Coral Reefs. In press. DOI: 10.1007/s00338-020-01969-9
 #' @references Morais, R.A., and Bellwood, D.R. (2018). Global drivers of reef fish growth. Fish and Fisheries. 19, 874–889. doi:10.1111/faf.12297
 #' @references Pauly, D. (1979). Gill size and temperature as governing factors in fish growth: A generalization of von Bertalanffy′s growth formula. Berichte aus dem Institut für Meereskunde Kiel, 63, 1–156
 #' @references Choat, J. H., & Robertson, D. R. (2002). Age-based studies. In P. Sale (Ed.), Coral reef fishes: Dynamics and diversity in a complex ecosystem (pp.57–80). San Diego, CA: Academic Press. https://doi.org/10.1016/B978-012615185-5/50005-0

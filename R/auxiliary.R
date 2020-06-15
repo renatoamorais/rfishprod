@@ -42,7 +42,7 @@ mkfact <- function (df, var, refdf)  {
 #' data (db)
 #' levels (db$Diet)
 #'
-#' @references <Morais, R.A., and Bellwood, D.R. (2018). Global drivers of reef fish growth. Fish and Fisheries. 19, 874–889. doi:10.1111/faf.12297>
+#' @references Morais, R.A., and Bellwood, D.R. (2018). Global drivers of reef fish growth. Fish and Fisheries. 19, 874–889. doi:10.1111/faf.12297
 #'
 #' @export
 

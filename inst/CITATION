@@ -6,9 +6,9 @@ bibentry(
   	       person("David R.", "Bellwood")),
   journal  = "Coral Reefs",
   year     = "2020",
-  volume   = "In Review",
+  doi      = "10.1007/s00338-020-01969-9",
   header   = "To cite rfishprod in publications use:",
-  textVersion = "Morais, RA; Bellwood, DR. Principles for estimating fish productivity on coral reefs. Coral Reefs. In review."
+  textVersion = "Morais, RA; Bellwood, DR. Principles for estimating fish productivity on coral reefs. Coral Reefs. In press."
 )
 
 bibentry(
