@@ -1,3 +1,5 @@
+vbf
+tf
 lvec
 vbf
 t
@@ -968,11 +970,24 @@ library (devtools)#
 library (usethis)#
 library (roxygen2)#
 library (tidyverse)#
-library (rmarkdown)
-rmarkdown::render ('README.Rmd')
+library (rmarkdown)#
+##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!###
+## TO DO LIST (on 16 July 2019) on 28 May 2020					###
+## --Add tests													###
+## --Further fill in package documentation						###
+## --Add vignette (simplify the Readme file and basically		###
+##		that will become the vignette, although plotting the	###
+##		Suppl Fig from the Funct Ecol paper would be nice)		###
+## --Fix xgboost parameters use									###
+##																###
+##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!###
+## A path for the package and creating the skeleton ###
 path <- file.path (getwd (), 'rfishprod')#
 #usethis::create_package (path)#
 setwd (path)#
 ## Loading everything ###
-devtools::load_all()
-rmarkdown::render ('README.Rmd')
+devtools::load_all()#
+#
+## Active project ###
+proj_activate(path)
+devtools::document()

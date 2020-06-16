@@ -30,7 +30,7 @@ This function applies the von Bertalanffy Growth Function to fish length data as
 \references{
 Depczynski, M., Fulton, C.J., Marnane, M.J., Bellwood, D.R. (2007). Life history patterns shape energy allocation among fishes on coral reefs. Oecologia 153, 111–120. doi:10.1007/s00442-007-0714-2
 
-Morais, R.A., and Bellwood, D.R. Quantifying fish productivity, an emergent tool for managing coral reef ecosystem services. Submitted
+Morais, R.A., and Bellwood, D.R. Principles for estimating fish productivity on coral reefs. Coral Reefs. In press. DOI: 10.1007/s00338-020-01969-9
 
 Morais, R.A., and Bellwood, D.R. (2018). Global drivers of reef fish growth. Fish and Fisheries. 19, 874–889. doi:10.1111/faf.12297
 
