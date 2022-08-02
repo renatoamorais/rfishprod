@@ -13,3 +13,19 @@ citation ('rfishprod')
 (2*10^4) / 1
 exp(3.4)
 exp (1.4)
+library (devtools)#
+library (usethis)#
+library (roxygen2)#
+library (tidyverse)#
+library (rmarkdown)
+rmarkdown::render ('README.Rmd')
+rmarkdown::pandoc_available
+?rmarkdown::pandoc_available
+pandoc_version
+pandoc_version()
+devtools::load_all()
+devtools::document()
+devtools::check()
+devtools::check()
+devtools::install()
+predM

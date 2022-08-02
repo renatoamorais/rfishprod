@@ -12,7 +12,7 @@ predM(
   temp,
   Lr,
   p = 0.5,
-  exp = -1,
+  exp = -0.91,
   method = c("Lorenzen")
 )
 }
@@ -31,7 +31,7 @@ predM(
 
 \item{p}{proportion of the body size range of a species to scale the function to be applied to M at the species-population level. Defaults to 0.5, meaning that M at the individual level is equal to M at the species/population level for fishes in the mid point of their body size range. Only relevant for \code{method = 'Function'}}
 
-\item{exp}{exponent of the relationship between mortality and length. Theoretically and empirically presumed to be either -0.75 (Jørgensen and Holt 2013) or -1 (Lorenzen et al. 2022).  Only relevant for \code{method = 'Function'}}
+\item{exp}{exponent of the relationship between mortality and length. Theoretically and empirically presumed to be either -0.75 (Jørgensen and Holt 2013) or -1 (Lorenzen et al. 2022). Set as the empirical evidence within this range from Lorenzen et al. 2022: -0.91 (see Table 2, model 3 'All populations' in this ref). Only relevant for \code{method = 'Function'}}
 
 \item{method}{method to be used for predicting mortality rates. Can be \code{'Pauly'}, \code{'Gislason'}, \code{'Lorenzen'} or \code{'Function'}. Pauly's equation predicts M (or Z, see description) at the species/population level from Linf (Lmax here), K (Kmax here) and temperature. Gislason (et al.)'s and Lorenzen (et al.)'s equations predict M at the individual-level by incorporating individual size (Lmeas), Lmax and Kmax. The 'Function' method (see Morais and Bellwood 2020) is my attempt to include a functional relationship with individual body size to the population-level estimate of M from Pauly. Method \code{'Function'} is yet to be properly validated (see Supporting Information from Morais and Bellwood 2020). Method \code{'Pauly'} ignores ontogenetic changes in mortality risk. Therefore, although based on a limited sample universe (particularly of reef fishes), methods \code{'Gislason'} and \code{'Lorenzen'} are temporarily preferred (the latest is set as the default as it is the most recent). Expect that this may change to \code{'Function'} or another method sometime in the future.}
 }
