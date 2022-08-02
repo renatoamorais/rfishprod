@@ -35,6 +35,10 @@ To get [`devtools`](https://cran.r-project.org/web/packages/devtools/index.html)
 
 Although not a dependency, I recommend using R 3.6.3 or higher. This is mainly because [`xgboost`]( https://CRAN.R-project.org/package=xgboost), the machine behind internal prediction, demands R 3.6.3 in its most recent version.
 
+## Updates
+
+On 02.08.2022: included the empirical equation to estimate instant mortality from Lorenzen et al (2022) Fish Res 252:106327. Also changed the method = 'Function' to leave the exponent of the relationship between mortality and body length adjustable by the user (it was fixed as -0.75) given evidence of the same paper that this exp could be closer to -1, instead of -0.75.
+
 
 ## Example
 

@@ -1,183 +1,3 @@
-vbf
-tf
-lvec
-vbf
-t
-tf
-t0f
-tf
-tf - t0f
-kf
-Linff <- 29.5#
-kf <- 0.448#
-t0f <- -0.1 ## est#
-af <- 0.0166#
-bf <- 3.07
--kf
-exp(-kf * (tf - t0f))
-exp (-zy)
-zy <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))
-zy
-zd <- zy / 365
-zd
-exp(-zy * (tf - t0f))
-round (exp (-zy * (tf - t0f)), 3)
-my
-my <- 1 - exp (-zy)
-my
-md <- 1 - exp (-zd)
-md
-t
-range (tf)
-exp (-zy)
-1 - exp (-zy)
-vbf
-t=tf
-max (t)
-(1 - exp (-z * (t - to)))
-(1 - exp (-z * (t - t0)))
--zy * (tf - t0f))
--zy * (tf - t0f)
-exp (-zy * (tf - t0f))
-exp (-zy)
-range (tf - t0f)
-zy
-(tf - t0f))
-(tf - t0f)
-exp (-zy) * (tf - t0f)
-exp (-zy)
-(tf - t0f) ^ exp (-zy)
-1 - exp (-zy * (tf - t0f))
-mf <- function (t, z, t0) {#
-	 1 - exp (-z * (t - t0))#
-}
-mf (tf, zy, t0f)
-diff (mf (tf, zy, t0f))
-round (diff (mf (tf, zy, t0f)), 5)
-cummor <- mf (tf, zy, t0f)
-dfmor <- diff (cummor)
-plotage (tf, cummor, dfmor, ylab = 'Mortality experienced')
-dfmor
-dfmor <- c (diff (cummor), 0)
-plotage (tf, cummor, dfmor, ylab = 'Mortality experienced')
-plot (tf, cummor)
-plot (tf, cummor, type = 'l')
-plot (mvec, cummor, type = 'l')
-plot (lvec, cummor, type = 'l')
-lines (lvec, dfmor, lty = 'dashed')
-lines (lvec, rescale (dfmor, range (cummor)), lty = 'dashed')
-plot (lvec, cummor, type = 'l')#
-lines (lvec, rescale (dfmor, range (cummor)), lty = 'dashed')
-round (dfmor, 4)
-sum(dfmor)
-cummorabs <- cummmor * tf
-cummorabs <- cummor * tf
-cummorabs
-cummorabs <- dfmor * tf
-cummorabs
-library (vegan)#
-library (shape)
-panel.hist <- function(x, ...)#
-{#
-    usr <- par("usr"); on.exit(par(usr))#
-    par(usr = c(usr[1:2], 0, 1.5) )#
-    h <- hist(x, plot = FALSE)#
-    breaks <- h$breaks; nB <- length(breaks)#
-    y <- h$counts; y <- y/max(y)#
-    rect(breaks[-nB], 0, breaks[-1], y, ...)#
-}#
-panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)#
-{#
-    usr <- par("usr"); on.exit(par(usr))#
-    par(usr = c(0, 1, 0, 1))#
-    r <- abs(cor(x, y))#
-    txt <- format(c(r, 0.123456789), digits = digits)[1]#
-    txt <- paste0(prefix, txt)#
-    if(missing(cex.cor)) cex.cor <- 0.6/strwidth(txt)#
-    text(0.5, 0.5, txt, cex = cex.cor * r)#
-}
-library (FSA)#
-library (scales)#
-#
-vbf <- vbFuns ("typical")#
-#----------------------------------------------------##
-## First: somatic growth rate and cumulative growth ###
-#----------------------------------------------------##
-#
-### Growth and length-weight parameters of a fish (Scarus frenatus from lizard_traits.csv) ####
-Linff <- 29.5#
-kf <- 0.448#
-t0f <- -0.1 ## est#
-af <- 0.0166#
-bf <- 3.07#
-#
-### Age vector ####
-tf <- c (seq (-0.1, 20, 0.01))#
-#
-### Length and mass vectors ####
-lvec <- vbf (tf, Linff, kf, t0f)#
-mvec <- af * (lvec ^ bf)#
-### Calculating growth rates (derivatives) ####
-dfmvec <- c (diff (mvec), 0)#
-#-----------------------------------------------------------------------##
-## Second: reproductive output rate and cumulative reproductive output ###
-#-----------------------------------------------------------------------##
-#
-### Reproductive output scaling with mass, with data from Barneche et al. 2018 Science ####
-### It appears that the formula for a generalised intercept is (from his Supp Mat eq 2:6) ####
-### Int fecundity.mass * Int egg-energy.egg-vol * (Int egg-vol.mas ^ slope egg-energy.egg-vol) ####
-### the slope of the reproductive energety.mass is from Scarus psittacus. Converted to mass ####
-### using the relationship of 23.46 J/mg of dry weight and dry weight = 0.25 * wet weight ####
-### Size at maturity for Scarus psittacus (FishBase) is 10.5 cm TL#
-#
-### Combining intercepts and slope for estimating energy reproductive output ####
-intf <- 2.93 * 2.15 * 0.15#
-slf <- 1.18 + 0.14 * 0.77#
-### Converting from joules to grams wet weight ###
-### If 23.46 J/mg dry weight, there's (23.46 * 0.25) * 1000 J/g wet weight#
-conversion <- (23.46 * 0.25) * 1000#
-#
-### Estimating mass reproductive rate ####
-dfmrepJ <- exp (intf * (log (mvec) ^ slf))#
-dfmrep <- ifelse (is.na (dfmrepJ), 0, dfmrepJ)  / conversion#
-	dfmrep [lvec < 10.5] <- 0#
-#
-### Cumulative reproductive output ####
-mrep <- cumsum (dfmrep)
-temp <- 29#
-zy <- exp (-0.0066 - (0.279 * log (Linff)) + (0.6534 * log (kf)) + (0.463 * log (temp)))#
-zd <- zy / 365#
-#
-## Proportional mortality per year and per day ###
-my <- 1 - exp (-zy)#
-md <- 1 - exp (-zd)#
-## Function for cumulative mortality ###
-mf <- function (t, z, t0) {#
-	 1 - exp (-z * (t - t0))#
-}#
-#
-cummor <- mf (tf, zy, t0f)#
-## Mortality experience at each time ###
-dfmor <- c (diff (cummor), 0)#
-#cummorabs <- dfmor * tf#
-#
-plot (tf, cummor, type = 'l')#
-plot (lvec, cummor, type = 'l')#
-lines (lvec, rescale (dfmor, range (cummor)), lty = 'dashed')
-plotage <- function (x, y, rate.y, xlab = 'Age', ylab, mgp = c (0.5, 0.5,0),...) {#
-	dy <- rescale (rate.y, range (y))#
-	plot (x, y, type = 'l', xlab = xlab, ylab = ylab, mgp = mgp, xaxt = 'n', yaxt = 'n',...)#
-		lines (x, dy, lty = 'dashed',...)#
-}#
-#
-par (mfrow = c (1,2), mar = c (2,2,1,1))#
-plotage (tf, mvec, dfmvec, ylab = 'Body mass')#
-plotage (tf, mrep, dfmrep, ylab = 'Reproductive output')#
-plotage (tf, cummor, dfmor, ylab = 'Mortality experienced')
-par (mfrow = c (1,3), mar = c (2,2,1,1))#
-plotage (tf, mvec, dfmvec, ylab = 'Body mass')#
-plotage (tf, mrep, dfmrep, ylab = 'Reproductive output')#
-plotage (tf, cummor, dfmor, ylab = 'Mortality experienced')
 ########################################################################
 #### Conceptual figure paper frameworkd of productivity estimates ######
 ################################################ May-2018 ##############
@@ -966,28 +786,136 @@ with(datagr, somaLoss (M = Md,#
 							   a = a,#
 							   b = b))
 rmarkdown::render ('README.Rmd')
+getwd()
 library (devtools)#
 library (usethis)#
 library (roxygen2)#
 library (tidyverse)#
-library (rmarkdown)#
-##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!###
-## TO DO LIST (on 16 July 2019) on 28 May 2020					###
-## --Add tests													###
-## --Further fill in package documentation						###
-## --Add vignette (simplify the Readme file and basically		###
-##		that will become the vignette, although plotting the	###
-##		Suppl Fig from the Funct Ecol paper would be nice)		###
-## --Fix xgboost parameters use									###
-##																###
-##!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!###
-## A path for the package and creating the skeleton ###
-path <- file.path (getwd (), 'rfishprod')#
-#usethis::create_package (path)#
-setwd (path)#
-## Loading everything ###
-devtools::load_all()#
-#
-## Active project ###
-proj_activate(path)
+library (rmarkdown)
+path <- file.path (getwd (), 'rfishprod')
+setwd (path)
+devtools::load_all()
+use_description (fields = list (#
+		Package = 'rfishprod',#
+		Version = '0.0.2',#
+		Title = 'Estimating Reef Fish Productivity',#
+		`Authors@R` = 'person ("Renato", "Morais", email = "renatomoraisaraujo@gmail.com",#
+							  role = c ("aut", "cre"), #
+							  comment = c(ORCID = "https://orcid.org/0000-0003-4652-6676"))',#
+		Description = 'Implements a framework to generate individual-level estimates of fish productivity, with a focus on reef fishes. This individual approach works by combining estimates of somatic growth through the von Bertalanffy Growth Model, and deterministic or stochastic natural mortality using instantaneous mortality rates.',#
+		Depends = 'R (>= 3.3.0)',#
+		URL = 'https://github.com/renatoamorais/rfishprod'))
+use_mit_license(name = "Renato Morais")
+?use_mit_license
+?use_mit_license
+use_mit_license(copyright_holder = "Renato Morais")
+use_mit_license(copyright_holder = "Renato Morais")
+use_package('xgboost', 'Depends')#
+use_package('scales', 'Imports')#
+use_package('stats', 'Imports')#
+use_package('rlang', 'Imports')#
+use_package('utils', 'Imports')
+use_r ('auxiliary')#
+use_r ('predicting_growth')#
+use_r ('applying_growth')#
+use_r ('predicting_mortality')#
+use_r ('applying_mortality')
+use_r ('predicting_mortality')
+devtools::load_all()
+usethis::use_package_doc()
+devtools::load_all()
 devtools::document()
+devtools::document()
+devtools::check()
+findir
+findir <- file.path (sub ("Ch5 Review on fish productivity/rfishprod", 'Ch1 Fundamental drivers of fish growth', getwd()))
+db <- read.csv (file.path (findir, '1st - Obtaining and processing database/db.csv')) %>%#
+		select (-Schooling, -FormFactor, -pelnpp) %>%#
+		rename (Position = 'Movimentation')
+db <- tidytrait (db, db)#
+use_data (db, overwrite = TRUE)
+xgboostparams <- readRDS(file.path (findir, '5th - Cross validating and predicting/xgboostparams.rds'))
+use_data (xgboostparams, repdata, internal = TRUE, overwrite = TRUE)
+devtools::load_all()
+devtools::document()
+devtools::check()
+remove.packages(‘rfishprod’)
+remove.packages('rfishprod')
+devtools::install()
+library (rfishprod)
+(repdata <- rfishprod:::repdata)
+repdata <- tidytrait (repdata, db)
+fmod <- formula (~ sstmean + MaxSizeTL + Diet + Position + Method)
+datagr <- predKmax (repdata, #
+                    dataset = db, #
+					fmod = fmod, #
+					niter = 10, #
+					return = 'pred')
+datagr <- datagr$pred
+datagr$Md <- with (datagr, #
+					predM (Lmeas = Size, #
+						     Lmax = MaxSizeTL, #
+						     Kmax = Kmax, #
+						     method = 'Lorenzen'))
+with (datagr, applyVBGF (Lmeas = Size, #
+						 Lmax = MaxSizeTL, #
+						 Kmax = Kmax))
+datagr$Size
+with(datagr, somaGain (a = a,#
+							   b = b,#
+							   Lmeas = Size, #
+				 			   Lmax = MaxSizeTL, #
+						       Kmax = Kmax))#
+# Applying stochastic mortality ##
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+applyMstoch (datagr$Md)
+datagr$Md
+with (datagr, #
+					predM (Lmeas = Size, #
+						     Lmax = MaxSizeTL, #
+						     Kmax = Kmax, #
+						     method = 'Gislason'))
+a = with (datagr, #
+					predM (Lmeas = Size, #
+						     Lmax = MaxSizeTL, #
+						     Kmax = Kmax, #
+						     method = 'Gislason'))
+b = with (datagr, #
+					predM (Lmeas = Size, #
+						     Lmax = MaxSizeTL, #
+						     Kmax = Kmax, #
+						     method = 'Lorenzen'))
+cor(a,b)
+plot(a,b)
+with(datagr, somaLoss (M = Md,#
+							   Lmeas = Size,#
+							   a = a,#
+							   b = b))
+citation('rfishprod')
