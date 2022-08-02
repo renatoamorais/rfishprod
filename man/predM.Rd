@@ -4,7 +4,7 @@
 \alias{predM}
 \title{Predicts natural mortality rates Z/M for reef fishes}
 \usage{
-predM(Lmeas, t = 1, Lmax, Kmax, Lr, temp, p = 0.5, method = c("Gislason"))
+predM(Lmeas, t = 1, Lmax, Kmax, Lr, temp, p = 0.5, method = c("Lorenzen"))
 }
 \arguments{
 \item{Lmeas}{a vector of fish sizes, for example, as derived from field data}
@@ -21,17 +21,19 @@ predM(Lmeas, t = 1, Lmax, Kmax, Lr, temp, p = 0.5, method = c("Gislason"))
 
 \item{p}{proportion of the body size range of a species to scale the function to be applied to M at the species-population level. Defaults to 0.5, meaning that M at the individual level is equal to M at the species/population level for fishes in the mid point of their body size range}
 
-\item{method}{method to be used for predicting mortality rates. Can be either \code{'Pauly'}, \code{'Gislason'} or \code{'Function'}. Pauly's equation predicts M (or Z, see description) at the species/population level from Linf (Lmax here), K (Kmax here) and temperature. Gislason (et al.)'s equation predicts M at the individual-level by incorporating individual size (Lmeas), Lmax and Kmax. The 'Function' method (see Morais and Bellwood, Coral Reefs, In press) includes a functional relationship with individual body size to the population-level estimate of M from Pauly. Method \code{'Function'} is not yet validated (see Supporting Information from Morais and Bellwood, Coral Reefs, In press). Method \code{'Pauly'} ignores ontogenetic changes in mortality risk. Therefore, although based on a limited sample universe, method \code{'Gislason'} is temporarily preferred (and is thus the default). Expect this to change to \code{'Function'} in the nearby future.}
+\item{method}{method to be used for predicting mortality rates. Can be \code{'Pauly'}, \code{'Gislason'}, \code{'Lorenzen'} or \code{'Function'}. Pauly's equation predicts M (or Z, see description) at the species/population level from Linf (Lmax here), K (Kmax here) and temperature. Gislason (et al.)'s and Lorenzen (et al.)'s equations predict M at the individual-level by incorporating individual size (Lmeas), Lmax and Kmax. The 'Function' method (see Morais and Bellwood 2020) is my attempt to include a functional relationship with individual body size to the population-level estimate of M from Pauly. Method \code{'Function'} is yet to be properly validated (see Supporting Information from Morais and Bellwood 2020). Method \code{'Pauly'} ignores ontogenetic changes in mortality risk. Therefore, although based on a limited sample universe (particularly of reef fishes), methods \code{'Gislason'} and \code{'Lorenzen'} are temporarily preferred (the latest is set as the default as it is the most recent). Expect that this may change to \code{'Function'} or another method sometime in the future.}
 }
 \description{
 This function uses empirical relationships to predict the expected natural mortality rates, Z, of a fish population or individual (depending on the method, see below). Z is the instantaneous mortality rate, the exponent describing the decreasing number of individuals from a cohort through time and, by extension, also describing the cumulative per capita mortality rate of an individual. Where fishing is absent, the instantaneous total mortality rate, M, is equal to Z, i.e. instantaneous fishing mortality rate, F, is equal zero.
 }
 \references{
-Morais, R.A., and Bellwood, D.R. Principles for estimating fish productivity on coral reefs. Coral Reefs. In press. DOI: 10.1007/s00338-020-01969-9
+Morais RA, and Bellwood DR (2020). Principles for estimating fish productivity on coral reefs. Coral Reefs 39: 1221–1231. DOI: 10.1007/s00338-020-01969-9
 
-Gislason H, Daan N, Rice JC, and Pope JG. 2010. Size, growth, temperature and the natural mortality of marine fish. Fish Fish 11: 149–58
+Lorenzen K, Camp EV, and Garlock TM (2022). Natural mortality and body size in fish populations. Fish Res 11: 149–58
 
-Pauly, D. (1980). On the interrelationships between natural mortality, growth parameters, and mean environmental temperature in 175 fish stocks. ICES J. Mar. Sci. 39, 175–192
+Gislason H, Daan N, Rice JC, and Pope JG (2010). Size, growth, temperature and the natural mortality of marine fish. Fish Fish 11: 149–58
+
+Pauly D (1980). On the interrelationships between natural mortality, growth parameters, and mean environmental temperature in 175 fish stocks. ICES J Mar Sci 39: 175–192
 }
 \seealso{
 \code{\link{somaLoss}}, \code{\link{applyMstoch}}

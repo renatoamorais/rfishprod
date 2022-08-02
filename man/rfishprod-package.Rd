@@ -6,15 +6,11 @@
 \alias{rfishprod-package}
 \title{rfishprod: Estimating Reef Fish Productivity}
 \description{
-Implements a framework to generate individual-level estimates
-    of fish productivity, with a focus on reef fishes. This individual
-    approach works by combining estimates of somatic growth through the
-    von Bertalanffy Growth Model, and deterministic or stochastic natural
-    mortality using instantaneous mortality rates.
+Implements a framework to generate individual-level estimates of fish productivity, with a focus on reef fishes. This individual approach works by combining estimates of somatic growth through the von Bertalanffy Growth Model, and deterministic or stochastic natural mortality using instantaneous mortality rates.
 }
 \section{\code{rfishprod} functions}{
 
-Use the functions \code{predKmax} and \code{predM} to predict growth and mortality trajectories, respectively. Then, use \code{somaGain}, \code{applyMstoch} and \code{somaLoss} to position your fishes in these trajectories and estimate components of productivity!
+Use the functions \code{predKmax} and \code{predM} to predict growth and mortality trajectories, respectively. Then, use \code{somaGain}, \code{applyMstoch} and \code{somaLoss} to position your fishes in these trajectories and estimate components of production/productivity!
 }
 
 \seealso{
