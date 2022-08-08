@@ -13,7 +13,7 @@
 #'
 #' @seealso \code{\link{predM}}, \code{\link{applyMstoch}} 
 #'
-#' @references Morais, R.A., and Bellwood, D.R. Principles for estimating fish productivity on coral reefs. Coral Reefs. In press. DOI: 10.1007/s00338-020-01969-9
+#' @references Morais RA, and Bellwood DR (2020). Principles for estimating fish productivity on coral reefs. Coral Reefs 39: 1221–1231. DOI: 10.1007/s00338-020-01969-9
 #' @export
 
 somaLoss <- function (M, Wei, Lmeas, a, b, t = 1) {
@@ -43,7 +43,7 @@ somaLoss <- function (M, Wei, Lmeas, a, b, t = 1) {
 #'
 #' @seealso \code{\link{predM}}, \code{\link{somaLoss}}
 #'
-#' @references Morais, R.A., and Bellwood, D.R. Principles for estimating fish productivity on coral reefs. Coral Reefs. In press. DOI: 10.1007/s00338-020-01969-9
+#' @references Morais RA, and Bellwood DR (2020). Principles for estimating fish productivity on coral reefs. Coral Reefs 39: 1221–1231. DOI: 10.1007/s00338-020-01969-9
 #' @export
 
 applyMstoch <- function (M, t = 1) {

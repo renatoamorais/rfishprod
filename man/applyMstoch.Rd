@@ -18,7 +18,7 @@ a logical vector with the fate of the individual (TRUE = survives, FALSE = dies)
 Stochastically draws fate to the individuals, i.e. success = survival, failure = mortality. Uses a Bernoulli distribution to assign fate based on the probability of survival calculated from instantaneous mortality rates (e.g. such as the output of \code{\link{predM}}). Contrarily to \code{\link{somaLoss}} this is easily interpretable at the level of the individual, i.e. survived or not.
 }
 \references{
-Morais, R.A., and Bellwood, D.R. Principles for estimating fish productivity on coral reefs. Coral Reefs. In press. DOI: 10.1007/s00338-020-01969-9
+Morais RA, and Bellwood DR (2020). Principles for estimating fish productivity on coral reefs. Coral Reefs 39: 1221–1231. DOI: 10.1007/s00338-020-01969-9
 }
 \seealso{
 \code{\link{predM}}, \code{\link{somaLoss}}

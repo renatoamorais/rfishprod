@@ -26,7 +26,7 @@ a numeric vector with the per capita expected loss, in weight units, due to natu
 This function calculates the expected per capita loss, in weight units, due to natural mortality. It is based on the instantaneous mortality rate as predicted by \code{\link{predM}}. Although the concept of per capita loss through mortality only makes sense at the population level, the function output this loss at the individual level.
 }
 \references{
-Morais, R.A., and Bellwood, D.R. Principles for estimating fish productivity on coral reefs. Coral Reefs. In press. DOI: 10.1007/s00338-020-01969-9
+Morais RA, and Bellwood DR (2020). Principles for estimating fish productivity on coral reefs. Coral Reefs 39: 1221–1231. DOI: 10.1007/s00338-020-01969-9
 }
 \seealso{
 \code{\link{predM}}, \code{\link{applyMstoch}}

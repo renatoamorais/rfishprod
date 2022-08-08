@@ -30,9 +30,25 @@ mainly because [`xgboost`](https://CRAN.R-project.org/package=xgboost),
 the machine behind internal prediction, demands R 3.6.3 in its most
 recent version.
 
-## Updates
+## NEWS!
 
-On 02.08.2022: included the empirical equation to estimate instant
+Recently (August 2022), I started working on the package again. Mostly
+updated documentation and changed a couple of functions (see below) with
+more sound approaches, but nothing that changes for the user. Might do
+more updates soon, including a vignette.
+
+## Recent updates
+
+On ***08.08.2022***: included an alternative parameterisation of the
+VBGM, the original one specifying the intercept (L0 or length at age 0).
+This is a biologically intuitive and more relevant form. It also ends
+arbitrarities of the rare instances when surveyed fishes were smaller
+than the estimated L0 from the model. This more natural form is
+recommended, but requires specifying for each fish its settlement size.
+In practice it is just another column in the data. If L0 is not
+specified, model keeps running business as usual.
+
+On ***02.08.2022***: included the empirical equation to estimate instant
 mortality from Lorenzen et al (2022) Fish Res 252:106327. Also changed
 the method = ‘Function’ to leave the exponent of the relationship
 between mortality and body length adjustable by the user (it was fixed
@@ -48,53 +64,62 @@ library(rfishprod)
 (repdata <- rfishprod:::repdata)
 
 # Getting levels ready #
-repdata <- tidytrait (repdata, db)
+repdata <- tidytrait(repdata, db)
 
 # Formula from Morais and Bellwood (2018) #
-fmod <- formula (~ sstmean + MaxSizeTL + Diet + Position + Method)
+fmod <- formula(~ sstmean + MaxSizeTL + Diet + Position + Method)
 
 # Predicting Kmax, the standardised VBGF parameter (Recommendation: use 100s to 1000s iterations) #
-datagr <- predKmax (repdata, 
-                    dataset = db,
-                    fmod = fmod,
-                    niter = 10,
-                    return = 'pred')
+datagr <- predKmax(repdata, 
+                   dataset = db,
+                   fmod = fmod,
+                   niter = 10,
+                   return = 'pred')
 
 datagr <- datagr$pred
 
 # Predicting M/Z: the instantaneous mortality rate (Recommendation: see help file for) #
-datagr$Md <- with (datagr,
-                   predM (Lmeas = Size,
-                          Lmax = MaxSizeTL,
-                          Kmax = Kmax,
-                          method = 'Gislason'))
+# Using the Lorenzen equation
+datagr$Md <- with (datagr, 
+                    predM (Lmeas = Size, 
+                             Lmax = MaxSizeTL, 
+                             Kmax = Kmax, 
+                             method = 'Lorenzen'))
+# But also the Gislason one
+datagr$Md <- with (datagr, 
+                    predM (Lmeas = Size, 
+                             Lmax = MaxSizeTL, 
+                             Kmax = Kmax, 
+                             method = 'Gislason'))
                            
 
 # Positioning your fish in their growth trajectory #
 # aka. what's the size they're supposed to have on the next day? #
-with (datagr, applyVBGF (Lmeas = Size,
-                         Lmax = MaxSizeTL,
-                         Kmax = Kmax))
+# now using L0, i.e., size at settlement, to constrain the curve #
+with(datagr, applyVBGF(Lmeas = Size,
+                       Lmax = MaxSizeTL,
+                       Kmax = Kmax,
+                       L0   = L0))
                          
 # Compare with their size on the previous day #
 datagr$Size
 
 # Estimating gross somatic growth (g) #
-with(datagr, somaGain (a = a,
-                       b = b,
-                       Lmeas = Size,
-                       Lmax = MaxSizeTL,
-                       Kmax = Kmax))
+with(datagr, somaGain(a = a,
+                      b = b,
+                      Lmeas = Size,
+                      Lmax = MaxSizeTL,
+                      Kmax = Kmax))
                               
 # Applying stochastic mortality #
-applyMstoch (datagr$Md)
+applyMstoch(datagr$Md)
 
 
 # Alternatively, estimating per capita mass loss due to mortality #
-with(datagr, somaLoss (M = Md,
-                       Lmeas = Size,
-                       a = a,
-                       b = b))
+with(datagr, somaLoss(M = Md,
+                      Lmeas = Size,
+                      a = a,
+                      b = b))
 ```
 
 ## Citation

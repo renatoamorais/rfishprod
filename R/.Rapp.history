@@ -1,31 +1,598 @@
-.data
-rlang::.data)
-rlang::.data
-library (rfishprod)
-?tidytrait
-citation ('rfishprod')
-2*10^4
-2*10^4 / 2*10^-3
-2*10^-3
-10^10 * 0.002
-10^7 * 0.002
-(2*10^4) / (2*10^-3)
-(2*10^4) / 1
-exp(3.4)
-exp (1.4)
-library (devtools)#
-library (usethis)#
-library (roxygen2)#
-library (tidyverse)#
-library (rmarkdown)
-rmarkdown::render ('README.Rmd')
-rmarkdown::pandoc_available
-?rmarkdown::pandoc_available
-pandoc_version
-pandoc_version()
-devtools::load_all()
-devtools::document()
-devtools::check()
-devtools::check()
-devtools::install()
-predM
+Lmeas
+silent
+ctrgr(Lmeas = Lmeas, Lgr = Lgr, silent = silent)
+ctrgr
+L0
+(1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)
+t0
+log(1 - (L0 / Lmax)) / Kmax
+t0 <- log(1 - (L0 / Lmax)) / Kmax
+tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)
+tt
+Lmax * (1 - exp(-Kmax * (tt - t0)))
+applyVBGF <- function (Lmeas, t = 1, Lmax, Kmax, t0, L0, t0lowbound = -0.5, silent = T) {#
+#
+	Li <- ifelse ((Lmeas / Lmax) > 1, 1, (Lmeas / Lmax))#
+	if(missing(L0) & missing(t0)){#
+		t0pr <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))#
+		t0 <- scales::rescale(t0pr, to = c(t0lowbound, max(t0pr)))#
+		L0pr <- Lmax * (1 - exp(Kmax * t0))#
+		L0 <- ifelse((L0pr / Lmeas) >= 1, Lmeas, L0pr)#
+	} else if(!missing(L0) & missing(t0)){#
+		t0 <- log(1 - (L0 / Lmax)) / Kmax#
+	} else if(missing(L0) & !missing(t0)){#
+		L0 <- Lmax * (1 - exp(Kmax * t0))#
+	}#
+	tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)#
+	Lgr <- Lmax * (1 - exp(-Kmax * (tt - t0)))#
+#
+	ctrgr(Lmeas = Lmeas, Lgr = Lgr, silent = silent)	#
+	return(Lgr)#
+}
+applyVBGF(Lmeas=10,t=1:10,Lmax=20,Kmax=0.5)
+applyVBGF(Lmeas=10,t=1:10,Lmax=20,Kmax=0.5,L0=2)
+applyVBGF
+applyVBGF(Lmeas=10,t=1:10,Lmax=20,Kmax=0.5,L0=90)
+applyVBGF(Lmeas=10,t=1:10,Lmax=20,Kmax=0.5,L0=9)
+applyVBGF(Lmeas=10,t=1:10,Lmax=20,Kmax=0.5,L0=11)
+applyVBGF(Lmeas=10,t=1:10,Lmax=20,Kmax=0.5,L0=0)
+t0pr <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))
+t0 <- scales::rescale(t0pr, to = c(t0lowbound, max(t0pr)))
+L0pr <- Lmax * (1 - exp(Kmax * t0))
+L0 <- ifelse((L0pr / Lmeas) >= 1, Lmeas, L0pr)
+L0
+(1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)
+L0=2
+(1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)
+L0=3
+(1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)
+tt1 = (1 / Kmax) * log((Lmax - 1.743953) / ((1 - Li) * Lmax)) + (t / 365)
+tt2 = (1 / Kmax) * log((Lmax - 2.5) / ((1 - Li) * Lmax)) + (t / 365)
+tt3 = (1 / Kmax) * log((Lmax - 3.5) / ((1 - Li) * Lmax)) + (t / 365)
+tt1
+tt2
+tt3
+Lmax * (1 - exp(-Kmax * (tt1 - t0)))
+Lmax * (1 - exp(-Kmax * (tt2 - t0)))
+identical(log(1 - (L0 / Lmax)) / Kmax, t0)
+t0
+L0
+applyVBGF <- function (Lmeas, t = 1, Lmax, Kmax, t0, L0, t0lowbound = -0.5, silent = T) {#
+#
+	Li <- ifelse ((Lmeas / Lmax) > 1, 1, (Lmeas / Lmax))#
+	if(!missing(L0) & missing(t0)){#
+		t0 <- log(1 - (L0 / Lmax)) / Kmax#
+	} else if(missing(L0) & !missing(t0)){#
+		L0 <- Lmax * (1 - exp(Kmax * t0))#
+	} else if(missing(L0) & missing(t0)){#
+		t0pr <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))#
+		t0 <- scales::rescale(t0pr, to = c(t0lowbound, max(t0pr)))#
+		L0pr <- Lmax * (1 - exp(Kmax * t0))#
+		L0 <- ifelse((L0pr / Lmeas) >= 1, Lmeas, L0pr)#
+	}#
+	tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)#
+	Lgr <- Lmax * (1 - exp(-Kmax * (tt - t0)))#
+#
+	ctrgr(Lmeas = Lmeas, Lgr = Lgr, silent = silent)	#
+	return(Lgr)#
+}
+applyVBGF(Lmeas=10,Kmax=0.5,Lmax=20,t=1:10)
+applyVBGF(Lmeas=10,Kmax=0.5,Lmax=20,t=1:10,L0=2)
+applyVBGF(Lmeas=10,Kmax=0.5,Lmax=20,t=1:10,L0=3)
+applyVBGF(Lmeas=10,Kmax=0.5,Lmax=20,t=1:10,L0=4)
+applyVBGF(Lmeas=25,Kmax=0.3,Lmax=26,t=1:10,L0=4)
+applyVBGF(Lmeas=25,Kmax=0.3,Lmax=26,t=1:10)
+applyVBGF(Lmeas=25,Kmax=0.3,Lmax=26,t=1:10,L0=10)
+applyVBGF <- function (Lmeas, t = 1, Lmax, Kmax, t0, L0, t0lowbound = -0.5, silent = T) {#
+#
+	Li <- ifelse((Lmeas / Lmax) > 1, 1, (Lmeas / Lmax))#
+	if(!missing(L0) & missing(t0)){#
+		t0 <- log(1 - (L0 / Lmax)) / Kmax#
+	} else if(missing(L0) & !missing(t0)){#
+		L0 <- Lmax * (1 - exp(Kmax * t0))#
+	} else if(missing(L0) & missing(t0)){#
+		t0pr <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))#
+		t0 <- scales::rescale(t0pr, to = c(t0lowbound, max(t0pr)))#
+		L0pr <- Lmax * (1 - exp(Kmax * t0))#
+		L0 <- ifelse((L0pr / Lmeas) >= 1, Lmeas, L0pr)#
+	}#
+	print(t0)#
+	print(L0)#
+	tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)#
+	Lgr <- Lmax * (1 - exp(-Kmax * (tt - t0)))#
+#
+	ctrgr(Lmeas = Lmeas, Lgr = Lgr, silent = silent)	#
+	return(Lgr)#
+}
+applyVBGF(Lmeas=25,Kmax=0.3,Lmax=26,t=1:10)
+applyVBGF <- function (Lmeas, t = 1, Lmax, Kmax, t0, L0, t0lowbound = -0.5, silent = T) {#
+#
+	Li <- ifelse((Lmeas / Lmax) > 1, 1, (Lmeas / Lmax))#
+	if(!missing(L0) & missing(t0)){#
+		t0 <- log(1 - (L0 / Lmax)) / Kmax#
+	} else if(missing(L0) & !missing(t0)){#
+		L0 <- Lmax * (1 - exp(Kmax * t0))#
+	} else if(missing(L0) & missing(t0)){#
+		t0pr <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))#
+		t0 <- scales::rescale(t0pr, to = c(t0lowbound, max(t0pr)))#
+		L0pr <- Lmax * (1 - exp(Kmax * t0))#
+		L0 <- ifelse((L0pr / Lmeas) >= 1, Lmeas, L0pr)#
+	}#
+	print(paste('t0 =', t0))#
+	print(paste('L0 =', L0))#
+	tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)#
+	Lgr <- Lmax * (1 - exp(-Kmax * (tt - t0)))#
+#
+	ctrgr(Lmeas = Lmeas, Lgr = Lgr, silent = silent)	#
+	return(Lgr)#
+}
+applyVBGF(Lmeas=25,Kmax=0.3,Lmax=26,t=1:10)
+applyVBGF(Lmeas=25,Kmax=0.3,Lmax=26,t=1:10,L0=2)
+Lgr
+applyVBGF <- function (Lmeas, t = 1, Lmax, Kmax, t0, L0, t0lowbound = -0.5, silent = T) {#
+#
+	Li <- ifelse((Lmeas / Lmax) > 1, 1, (Lmeas / Lmax))#
+	if(!missing(L0) & missing(t0)){#
+		t0 <- log(1 - (L0 / Lmax)) / Kmax#
+	} else if(missing(L0) & !missing(t0)){#
+		L0 <- Lmax * (1 - exp(Kmax * t0))#
+	} else if(missing(L0) & missing(t0)){#
+		t0pr <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))#
+		t0 <- scales::rescale(t0pr, to = c(t0lowbound, max(t0pr)))#
+		L0pr <- Lmax * (1 - exp(Kmax * t0))#
+		L0 <- ifelse((L0pr / Lmeas) >= 1, Lmeas, L0pr)#
+	}#
+	print(paste('t0 =', t0))#
+	print(paste('L0 =', L0))#
+	tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)#
+	Lgr <- Lmax * (1 - exp(-Kmax * (tt - t0)))#
+	print(Lgr)#
+	ctrgr(Lmeas = Lmeas, Lgr = Lgr, silent = silent)	#
+	return(Lgr)#
+}
+Lgr
+applyVBGF(Lmeas=25,Kmax=0.3,Lmax=26,t=1:10,L0=2)
+applyVBGF(Lmeas=25,Kmax=0.3,Lmax=26,t=1:10)
+applyVBGF(Lmeas=25,Kmax=0.3,Lmax=26,t=1:10,L0=5)
+applyVBGF(Lmeas=5.5,Kmax=0.3,Lmax=26,t=1:10,L0=5)
+applyVBGF(Lmeas=5.5,Kmax=0.3,Lmax=26,t=1:10)
+applyVBGF <- function (Lmeas, t = 1, Lmax, Kmax, t0, L0, t0lowbound = -0.5, silent = T) {#
+#
+	Li <- ifelse((Lmeas / Lmax) > 1, 1, (Lmeas / Lmax))#
+	if(!missing(L0) & missing(t0)){#
+		t0 <- log(1 - (L0 / Lmax)) / Kmax#
+	} else if(missing(L0) & !missing(t0)){#
+		L0 <- Lmax * (1 - exp(Kmax * t0))#
+	} else if(missing(L0) & missing(t0)){#
+		t0pr <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))#
+		t0 <- scales::rescale(t0pr, to = c(t0lowbound, max(t0pr)))#
+		L0pr <- Lmax * (1 - exp(Kmax * t0))#
+		L0 <- ifelse((L0pr / Lmeas) >= 1, Lmeas, L0pr)#
+	}#
+	print(paste('t0 =', t0))#
+	print(paste('L0 =', L0))#
+	tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)#
+	Lgr <- Lmax * (1 - exp(-Kmax * (tt - t0)))#
+	print(tt)#
+	ctrgr(Lmeas = Lmeas, Lgr = Lgr, silent = silent)	#
+	return(Lgr)#
+}
+applyVBGF(Lmeas=5.5,Kmax=0.3,Lmax=26,t=1:10)
+Lmeas = 20
+Lmeas = 20
+Lmeas = 20
+Lmax = 25
+t = 1:10
+Kmax = 0.1
+L0 <- list(1:4
+)
+L0
+L0 <- vector(1:4)
+L0 <- vector(mode = 'list',1:4)
+L0 <- 1:4
+L0 <- 1:4
+t0 <- log(1 - (L0 / Lmax)) / Kmax
+t0
+(t0 <- log(1 - (L0 / Lmax)) / Kmax)
+(Li <- ifelse((Lmeas / Lmax) > 1, 1, (Lmeas / Lmax)))
+Li = Lmeas / Lmax
+Li
+(tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365))
+L0
+i=1
+(tt <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))
+(Lgr <- Lmax * (1 - exp(-Kmax * (tt - t0[i]))))
+Lmax
+L0[i]
+Lmax - L0[i]
+(1 - Li)
+(1 - Li) * Lmax)
+(1 - Li) * Lmax
+log((Lmax - L0[i]) / ((1 - Li) * Lmax))
+tt <- list()
+Lgr <- list()
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt - t0[i]))))	#
+#
+}
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+#
+}
+tt
+Lgr
+t0
+tt
+tt[[i]]
+t0
+t0 <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))
+t0
+Lmax * (1 - exp(Kmax ))
+Lmax * (1 - exp(Kmax +1 ))
+t0 <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))
+t0
+library(FSA)
+vignette(FSA)
+vignette('FSA')
+fishR()
+?FSA
+vbFuns('typical')
+vbFuns('original')
+L0
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- Lmax - (Lmax-L0) * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))#
+#
+}
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- Lmax - (Lmax-L0[i]) * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))#
+#
+}
+Lgr_cons <- list()
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- Lmax - (Lmax-L0[i]) * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))#
+#
+}
+Lgr
+L0 <- 1:4#
+#(t0 <- log(1 - (L0 / Lmax)) / Kmax)#
+#
+tt <- list()#
+Lgr <- list()#
+Lgr_cons <- list()#
+#
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- Lmax - (Lmax-L0[i]) * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))#
+#
+}
+tt
+Lgr
+Lgr_cons
+vbFuns('original')
+tt
+t0
+(t0 <- log(1 - (L0 / Lmax)) / Kmax)
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- Lmax - (Lmax-L0[i]) * (1 - exp(-Kmax * t))#
+#
+}
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- Lmax - (Lmax-L0[i]) * (1 - exp(-Kmax * t)))#
+#
+}
+Lgr
+Lgr_cons
+vbFuns('typical')
+vbFuns('traditional')
+vbFuns('original')
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- Lmax - (Lmax-L0[i]) * (1 - exp(-Kmax * tt[[i]])))#
+#
+}
+Lgr
+Lgr_cons
+Lmax * (1 - exp(-Kmax * (0 - t0[i]))))
+Lmax * (1 - exp(-Kmax * (0 - t0[i])))
+tt
+L0 <- 1:4
+(t0 <- log(1 - (L0 / Lmax)) / Kmax)
+vbFuns('BevertonHolt')
+vbFuns('typical')
+identical(vbFuns('typical'), vbFuns('BevertonHolt'))
+vbFuns('vonBertalanffy')
+vbFuns('Ogler')
+vbFuns('Ogler\')
+vbFuns('Ogler')
+vbFuns('Ogle')
+?vbFuns('Ogle')
+tt <- list()#
+Lgr <- list()#
+Lgr_cons <- list()#
+#
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- L0[i] + (Lmax-L0[i]) * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))#
+#
+}
+Lgr_cons
+t0
+Lgr
+tt <- list()#
+Lgr <- list()#
+Lgr_cons <- list()#
+#
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- L0[i] + (Lmax-L0[i]) * (1 - exp(-Kmax * (tt[[i]] - (-0.3))))#
+#
+}
+tt <- list()#
+Lgr <- list()#
+Lgr_cons <- list()#
+#
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- L0[i] + (Lmax-L0[i]) * (1 - exp(-Kmax * (tt[[i]] - (-0.3)))))#
+#
+}
+Lgr_cons
+L0
+L0 <- 1:4#
+(t0 <- log(1 - (L0 / Lmax)) / Kmax)#
+#
+tt <- list()#
+Lgr <- list()#
+Lgr_cons <- list()#
+#
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- L0[i] + (Lmax-L0[i]) * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))#
+#
+}
+Lgr_cons
+L0
+tt <- list()#
+Lgr <- list()#
+Lgr_cons <- list()#
+#
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- L0[i] + (Lmax-L0[i]) * (1 - exp(-Kmax * tt[[i]])))#
+#
+}
+Lgr_cons
+Lgr
+Lmeas = 5
+Li = Lmeas / Lmax
+tt <- list()#
+Lgr <- list()#
+Lgr_cons <- list()#
+#
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- L0[i] + (Lmax-L0[i]) * (1 - exp(-Kmax * tt[[i]])))#
+#
+}
+Lgr
+Lgr_cons
+Li = seq(2,25,by=0.1) / Lmax
+Li
+seq(2,25,by=0.1)
+Li = seq(2,25,by=0.1) / Lmax#
+L0 = 2#
+t=1#
+age <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365))
+age <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)
+age
+Li = seq(2,24.9,by=0.1) / Lmax#
+L0 = 2#
+Lmax=25#
+t=1#
+age <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)
+age
+Lgr <- L0 + (Lmax - L0) * (1 - exp(-Kmax * age))
+Lgr
+Lgr2 <- Lmax * (1 - exp(-Kmax * (age - (-0.3)))))
+Lgr2 <- Lmax * (1 - exp(-Kmax * (age - (-0.3))))
+Lgr2
+plot(x=age, y=Lgr, type='l', col='blue')
+plot(x=age, y=Lgr, type='l', col='blue')#
+lines(x=age, y=Lgr2, type='l', col='red')#
+abline(x=0, lty='dotted')
+abline(v=0, lty='dotted')
+?abline
+abline(v=0, lty='dotted')
+plot(x=age, y=Lgr, type='l', col='blue', ylim=c(0,25), lwd=2)#
+lines(x=age, y=Lgr2, type='l', col='red', lwd=2)#
+abline(v=0, lty='dotted')
+abline(h=2, lty='dotted')
+t0 <- log(1 - (L0 / Lmax)) / Kmax)
+t0 <- log(1 - (L0 / Lmax)) / Kmax
+t0
+applyVBGF <- function (Lmeas, t = 1, Lmax, Kmax, L0, t0, t0lowbound = -0.5,  silent = T) {#
+#
+	Li <- ifelse ((Lmeas / Lmax) > 1, 1, (Lmeas / Lmax))#
+	if(missing(L0)){	#
+		if(missing(t0)){#
+			t0pr <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))#
+			t0 <- scales::rescale(t0pr, to = c(t0lowbound, max(t0pr)))#
+			}#
+		L0pr <- Lmax * (1 - exp(Kmax * t0))#
+		L0 <- ifelse((L0pr / Lmeas) >= 1, Lmeas, L0pr)#
+	} else {#
+		t0 <- log(1 - (L0 / Lmax)) / Kmax#
+	}#
+	tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)#
+	Lgr <- Lmax * (1 - exp(-Kmax * (tt - t0)))#
+#
+	ctrgr(Lmeas = Lmeas, Lgr = Lgr, silent = silent)	#
+	return(Lgr)#
+}
+applyVBGF(Lmeas=6, t=1, Lmax=20, Kmax=0.3)
+applyVBGF(Lmeas=6, t=1, Lmax=20, Kmax=0.3, L0=2)
+Lgr2 <- Lmax * (1 - exp(-Kmax * (age - t0[i]))))
+Lgr2 <- Lmax * (1 - exp(-Kmax * (age - t0[i])))
+plot(x=age, y=Lgr, type='l', col='blue', ylim=c(0,25), lwd=2)#
+lines(x=age, y=Lgr2, type='l', col='red', lwd=2)#
+abline(v=0, lty='dotted')	#
+abline(h=2, lty='dotted')
+lines(x=age, y=Lgr2, type='l', col='red', lwd=3)
+Lgr2
+t0
+t0[i]
+Lgr2 <- Lmax * (1 - exp(-Kmax * (age - t0)))
+plot(x=age, y=Lgr, type='l', col='blue', ylim=c(0,25), lwd=2)#
+lines(x=age, y=Lgr2, type='l', col='red', lwd=3)#
+abline(v=0, lty='dotted')	#
+abline(h=2, lty='dotted')
+t0
+Li = seq(2,24.9,by=0.1) / Lmax#
+L0 = c(2,4)#
+Lmax=25#
+t=1#
+age1 <- (1 / Kmax) * log((Lmax - L0[1]) / ((1 - Li) * Lmax)) + (t / 365)#
+Lgr1 <- L0[1] + (Lmax - L0[1]) * (1 - exp(-Kmax * age))#
+#
+age2 <- (1 / Kmax) * log((Lmax - L0[2]) / ((1 - Li) * Lmax)) + (t / 365)#
+Lgr2 <- L0[2] + (Lmax - L0[2]) * (1 - exp(-Kmax * age))#
+#
+plot(x=age1, y=Lgr1, type='l', col='blue', ylim=c(0,25), lwd=2)#
+lines(x=age2, y=Lgr2, type='l', col='red', lwd=2)#
+abline(v=0, lty='dotted')	#
+abline(h=2, lty='dotted')
+library(rfishprod)
+detach('rfishprod')
+detach('package:rfishprod')
+library(rfishprod)
+applyVBGF <- function (Lmeas, t = 1, Lmax, Kmax, L0, t0, t0lowbound = -0.5,  silent = T) {#
+#
+	Li <- ifelse ((Lmeas / Lmax) > 1, 1, (Lmeas / Lmax))#
+	if(missing(L0)){	#
+		if(missing(t0)){#
+			t0 <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))#
+			t0 <- scales::rescale(t0, to = c(t0lowbound, max(t0)))#
+			}#
+		L0 <- Lmax * (1 - exp(Kmax * t0))#
+		L0 <- ifelse((L0 / Lmeas) >= 1, Lmeas, L0)#
+		tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)#
+		Lgr <- Lmax * (1 - exp(-Kmax * (tt - t0)))#
+	} else {#
+		L0 <- ifelse((L0 / Lmeas) >= 1, Lmeas, L0)#
+		tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)#
+		Lgr <- L0 + (Lmax - L0) * (1 - exp(-Kmax * tt)))#
+	}#
+#
+	ctrgr(Lmeas = Lmeas, Lgr = Lgr, silent = silent)	#
+	return(Lgr)#
+}
+applyVBGF <- function (Lmeas, t = 1, Lmax, Kmax, L0, t0, t0lowbound = -0.5,  silent = T) {#
+#
+	Li <- ifelse ((Lmeas / Lmax) > 1, 1, (Lmeas / Lmax))#
+	if(missing(L0)){	#
+		if(missing(t0)){#
+			t0 <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))#
+			t0 <- scales::rescale(t0, to = c(t0lowbound, max(t0)))#
+			}#
+		L0 <- Lmax * (1 - exp(Kmax * t0))#
+		L0 <- ifelse((L0 / Lmeas) >= 1, Lmeas, L0)#
+		tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)#
+		Lgr <- Lmax * (1 - exp(-Kmax * (tt - t0)))#
+	} else {#
+		L0 <- ifelse((L0 / Lmeas) >= 1, Lmeas, L0)#
+		tt <- (1 / Kmax) * log((Lmax - L0) / ((1 - Li) * Lmax)) + (t / 365)#
+		Lgr <- L0 + (Lmax - L0) * (1 - exp(-Kmax * tt))#
+	}#
+#
+	ctrgr(Lmeas = Lmeas, Lgr = Lgr, silent = silent)	#
+	return(Lgr)#
+}
+applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax)
+applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax,L0=2)
+applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax, L0=2)
+Lgr1 <- L0[1] + (Lmax - L0[1]) * (1 - exp(-Kmax * age))
+Lgr1
+applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax, L0=4)
+applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax, L0=4)
+applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax)
+library(rfishprod)
+detach('package:rfishprod')
+library(rfishprod)
+applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax)
+applyVBGF
+rifishprod::applyVBGF
+rfishprod::applyVBGF
+rfishprod::applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax)
+Lmeas=seq(2,24.9,by=0.1)
+t0 <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))
+t0 <- scales::rescale(t0, to = c(t0lowbound, max(t0)))
+t0
+L0 <- Lmax * (1 - exp(Kmax * t0))
+L0
+ifelse((L0 / Lmeas) >= 1, Lmeas, L0)
+applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax, L0=2)
+applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax)
+Lmeas = 5#
+Lmax = 25#
+t = 1:10#
+Kmax = 0.1#
+Li = Lmeas / Lmax#
+#
+t0 <- -10 ^ (-0.3922 - (0.2752 * log10(Lmax)) - 1.038 * log10(Kmax))#
+L0 <- Lmax * (1 - exp(Kmax * t0))#
+#
+L0 <- 1:4#
+(t0 <- log(1 - (L0 / Lmax)) / Kmax)#
+yVB#
+tt <- list()#
+Lgr <- list()#
+Lgr_cons <- list()#
+#
+for (i in L0){#
+#
+(tt[[i]] <- (1 / Kmax) * log((Lmax - L0[i]) / ((1 - Li) * Lmax)) + (t / 365))#
+(Lgr[[i]] <- Lmax * (1 - exp(-Kmax * (tt[[i]] - t0[i]))))	#
+(Lgr_cons[[i]] <- L0[i] + (Lmax-L0[i]) * (1 - exp(-Kmax * tt[[i]])))#
+#
+}
+Lgr
+Lgr_cons
+applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax, L0=2)
+applyVBGF(Lmeas=seq(2,24.9,by=0.1), t=1,Lmax=Lmax,Kmax=Kmax)
