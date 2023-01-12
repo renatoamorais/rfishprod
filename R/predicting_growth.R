@@ -34,18 +34,15 @@ if (missing (dataset)) {
 }
 
 
-if (is.null (params)) {
-
-  if (identical (dataset, db)) {
+if(identical (dataset, db) & is.null (params)) {
 	
 	params <- xgboostparams
 	
-  } else {
+} else {
 	
 	params <- list ()
 	warning('Consider optimising xgboost parameters with xgb.train')
 	
-  }
 }
 
 	
