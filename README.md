@@ -4,6 +4,7 @@
 # rfishprod
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 Implements a framework to generate individual-level estimates of fish
@@ -25,22 +26,31 @@ To get
 [`devtools`](https://cran.r-project.org/web/packages/devtools/index.html),
 simply use `install.packages("devtools")`.
 
-Although not a dependency, I recommend using R 3.6.3 or higher. This is
-mainly because [`xgboost`](https://CRAN.R-project.org/package=xgboost),
-the machine behind internal prediction, demands R 3.6.3 in its most
-recent version.
+Although not a dependency, I recommend using R 4.5.2 (or higher). This
+is mainly because
+[`xgboost`](https://CRAN.R-project.org/package=xgboost), the machine
+behind internal prediction, demands R 4.3.0 as a minimum and you don’t
+want to be stuck with an older R version.
 
 ## NEWS!
 
-Some time ago (August 2022), I started working on the package again. 
-But then had to stop due to other commitments. I have now (May 2026)
-quickly fixed a major bug now due to updates within xgboost. Please 
-report if you can't use predKmax.
+Some time ago (August 2022), I started working on the package again.
+Then I had to stop it. It gets tricky to catch up with old projects… I
+have just now (May 2026) updated predKmax to ensure it is compatible
+with the new argument structure from xgboost. If you’ve been finding
+issues running rfishprod, remove and reinstall the package and xgboost,
+and please let me know if issues continue. People were get the following
+errors: 1) negative Kmax estimates; 2) errors with factors. First case
+stems from the distribution of the predKmax xgboost model (Gamma) not
+being passed on to xgboost due to argument mismatches. The new fix
+solves issue (all of this is handled internally, so nothing changes in
+the code, it just means that predKmax should work again). Thanks Erin
+Dillon for pointing out the problem! The second error typically stems
+from not checking and standardising variables. I have now updated
+tidytrait so that it handles the most common forms of mismatch (often
+due to misspelling) within its own structure.
 
-## Recent updates
-
-On ***15.05.2026***: Changed the function predKmax so that it is compatible
-with the new argument structure of xgboost (version 3.1.1.1).
+## Previous updates
 
 On ***08.08.2022***: included an alternative parameterisation of the
 VBGM, the original one specifying the intercept (L0 or length at age 0).
@@ -127,8 +137,8 @@ with(datagr, somaLoss(M = Md,
 
 ## Citation
 
-If you’re using `rfishprod`, please cite the papers that generated it. 
-The relevant citations for the package can be obtained from:
+If you’re using `rfishprod`, please make sure you cite the works that
+originated it. The citations for the package can be obtained from:
 
 ``` r
 citation("rfishprod")

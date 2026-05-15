@@ -45,7 +45,7 @@ mkfact <- function(df, var, refdf)  {
 
 tidytrait <- function(traits, dataset, levels.dataset = TRUE, include.method = FALSE) {
 	
-varmod <- c ('Diet', 'Position', 'Method')
+varmod <- c('Diet', 'Position', 'Method')
 	if (levels.dataset == T) {
 	dataset[,'Diet'] <- factor(dataset[,'Diet'], 
 		c("HerMac", "HerDet", "Omnivr", "Plktiv", "InvSes", "InvMob", "FisCep"))
@@ -58,6 +58,17 @@ varmod <- c ('Diet', 'Position', 'Method')
 	if (!all(varmod %in% colnames(traits))) {
 		absentvar <- varmod [!varmod %in% colnames (traits)]
 		stop(paste('The variable', absentvar, 'was not found in the dataset.'))
+	}
+	diet_match <- all(traits$Diet %in% dataset$Diet)
+	position_match <- all(traits$Position %in% dataset$Position)
+	method_match <- all(traits$Method %in% dataset$Method)
+	all_cat_vars <- c(diet_match,position_match,method_match)
+	if(!all(all_cat_vars)){
+	  prob_vars <- varmod[which(!all_cat_vars)]
+	  stop(paste('Variable', prob_vars, 'has levels that do not match the reference dataset spelling, perhaps a typo? Call db and ensure all levels match.'))
+	}
+	if(!is.numeric(traits$sstmean)){
+	  traits$sstmean <- as.numeric(traits$sstmean)
 	}
 	traits[,'Diet']     <- mkfact(traits, 'Diet', dataset)
 	traits[,'Position'] <- mkfact(traits, 'Position', dataset)
