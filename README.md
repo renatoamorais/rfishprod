@@ -32,12 +32,15 @@ recent version.
 
 ## NEWS!
 
-Recently (August 2022), I started working on the package again. Mostly
-updated documentation and changed a couple of functions (see below) with
-more sound approaches, but nothing that changes for the user. Might do
-more updates soon, including a vignette.
+Some time ago (August 2022), I started working on the package again. 
+But then had to stop due to other commitments. I have now (May 2026)
+quickly fixed a major bug now due to updates within xgboost. Please 
+report if you can't use predKmax.
 
 ## Recent updates
+
+On ***15.05.2026***: Changed the function predKmax so that it is compatible
+with the new argument structure of xgboost (version 3.1.1.1).
 
 On ***08.08.2022***: included an alternative parameterisation of the
 VBGM, the original one specifying the intercept (L0 or length at age 0).
@@ -124,8 +127,8 @@ with(datagr, somaLoss(M = Md,
 
 ## Citation
 
-Please, if you’re using `rfishprod`, the relevant citation for the
-package can be obtained from:
+If you’re using `rfishprod`, please cite the papers that generated it. 
+The relevant citations for the package can be obtained from:
 
 ``` r
 citation("rfishprod")

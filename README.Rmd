@@ -33,13 +33,16 @@ devtools::install_github("renatoamorais/rfishprod")
 
 To get [`devtools`](https://cran.r-project.org/web/packages/devtools/index.html), simply use `install.packages("devtools")`.
 
-Although not a dependency, I recommend using R 3.6.3 or higher. This is mainly because [`xgboost`]( https://CRAN.R-project.org/package=xgboost), the machine behind internal prediction, demands R 3.6.3 in its most recent version.
+Although not a dependency, I recommend using R 4.5.1 or higher. This is mainly because [`xgboost`]( https://CRAN.R-project.org/package=xgboost), the machine behind the internal prediction, demands a miniimum R 4.3.0 in its most recent version -- but you don't want to be stuck with an old R.
 
 ## NEWS!
 
-Recently (August 2022), I started working on the package again. Mostly updated documentation and changed a couple of functions (see below) with more sound approaches, but nothing that changes for the user. Might do more updates soon, including a vignette.
+Some time ago (August 2022), I started working on the package again. But then had to stop due to other commitments. I have now (May 2026) quickly fixed a major bug now due to updates within xgboost. Please report if you can't use predKmax.
 
 ## Recent updates
+
+On ***15.05.2026***: Changed the function predKmax so that it is compatible
+with the new argument structure of xgboost (version 3.1.1.1).
 
 On ***08.08.2022***: included an alternative parameterisation of the VBGM, the original one specifying the intercept (L0 or length at age 0). This is a biologically intuitive and more relevant form. It also ends arbitrarities of the rare instances when surveyed fishes were smaller than the estimated L0 from the model. This more natural form is recommended, but requires specifying for each fish its settlement size. In practice it is just another column in the data. If L0 is not specified, model keeps running business as usual.
 

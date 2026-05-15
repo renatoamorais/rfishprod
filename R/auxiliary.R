@@ -13,16 +13,12 @@
 #' @export
 
 
-mkfact <- function (df, var, refdf)  {
-	
+mkfact <- function(df, var, refdf)  {
 	if (is.null(levels (refdf[, var]))) { 
 		stop (paste ('Variable', var, 'has no detectable levels. Either this is not the correct variable, or tidytrait could not add levels to it.'))
 	} else {
-	
 		factor (df[, var], levels (refdf[, var]))
-	
 	}
-
 }
 
 
@@ -47,34 +43,28 @@ mkfact <- function (df, var, refdf)  {
 #' @export
 
 
-tidytrait <- function (traits, dataset, levels.dataset = TRUE, include.method = FALSE) {
+tidytrait <- function(traits, dataset, levels.dataset = TRUE, include.method = FALSE) {
 	
 varmod <- c ('Diet', 'Position', 'Method')
-	
 	if (levels.dataset == T) {
-		
 	dataset[,'Diet'] <- factor(dataset[,'Diet'], 
 		c("HerMac", "HerDet", "Omnivr", "Plktiv", "InvSes", "InvMob", "FisCep"))
 	dataset[,'Position'] <- factor(dataset[,'Position'], 
 		c("PelgAs", "PelgDw", "BtPlAs", "BtPlDw", "BnthAs", "BnthDw"))
 	dataset[,'Method'] <- factor(dataset[,'Method'], 
 		c("LenFrq", "MarkRc", "Otolth", "Unknow", "OthRin", "ScalRi"))
-		
 	}
-	
 	if (include.method == T) traits[, 'Method'] <- 'Otolth'
-	if (!all(varmod %in% colnames (traits))) {
+	if (!all(varmod %in% colnames(traits))) {
 		absentvar <- varmod [!varmod %in% colnames (traits)]
-		stop (paste('The variable', absentvar, 'was not found in the dataset.	'))
+		stop(paste('The variable', absentvar, 'was not found in the dataset.'))
 	}
-		
-	traits[,'Diet'] <- mkfact (traits, 'Diet', dataset)
-	traits[,'Position'] <- mkfact (traits, 'Position', dataset)
-	traits[,'Method'] <- mkfact (traits, 'Method', dataset)
-	
+	traits[,'Diet']     <- mkfact(traits, 'Diet', dataset)
+	traits[,'Position'] <- mkfact(traits, 'Position', dataset)
+	traits[,'Method']   <- mkfact (traits, 'Method', dataset)
 	return(traits)
-	
-}
+
+	}
 
 
 #' @title Control flow for the applyVBGF function
@@ -92,21 +82,16 @@ varmod <- c ('Diet', 'Position', 'Method')
 
 ctrgr <- function (Lmeas, Lgr, silent = FALSE) {
 	
-	msg <- c("All good mate, your fish are growing!", 
+  msg <- c("All good mate, your fish are growing!", 
 			 "Virtual fish keeper medal to you, your fish are growing!",
 			 "This message has a probability of occurrence of only 1% (and your fish are growing)!")
-	
 	if (any(Lgr < Lmeas)) {	
-		
 		stop("Fish should not decrease in size (Lgr < Lmeas)!")	
-		
-		} else if (silent == F) {
-		
-			print(sample(msg, 1, prob = c(0.495, 0.495, 0.01)))
-		
+	} else if (silent == F) {
+		print(sample(msg, 1, prob = c(0.495, 0.495, 0.01)))
 		}
 
-}
+  }
 
 
 
@@ -125,7 +110,5 @@ ctrgr <- function (Lmeas, Lgr, silent = FALSE) {
 
 
 rbernoulli <- function (n, p = 0.5) {
-	
 	stats::runif(n) > (1 - p)
-
 }

@@ -11,8 +11,8 @@ predKmax(
   params = NULL,
   niter,
   nrounds = 150,
-  verbose = 0,
-  print_every = 1000,
+  verbosity = 0,
+  print_every_n = 1000,
   return = c("pred", "relimp", "models"),
   lowq = 0.25,
   uppq = 0.75
@@ -25,15 +25,15 @@ predKmax(
 
 \item{fmod}{model formula, should be specified}
 
-\item{params}{set of parameters to optimise the performance of xgboost.}
+\item{params}{set of parameters to optimise the performance of xgboost. These are mapped within the function to optimise xgboost's performance. These parameters are dataset-specific so if you change the dataset, you should consider optimising these parameters using (\code{xgb.train}) within xgboost.}
 
 \item{niter}{number of xgboost models run for the bootstrap procedure}
 
 \item{nrounds}{maximum number of boosting interactions per model}
 
-\item{verbose}{should xgboost speak to you? If you do not want you workspace flooded, keep this at 0. Alternatively, check xgboost help file}
+\item{verbosity}{should xgboost speak to you? If you do not want your workspace flooded, keep this at 0. Alternatively, check xgboost help file}
 
-\item{print_every}{a friend of verbose, treat it likewise}
+\item{print_every_n}{a friend of verbosity, treat it likewise}
 
 \item{return}{what type of information to return. With three options: predictions (\code{pred}), relative importance of the variables used to predict (\code{relimp}), xgboost models (\code{models}). Defaults to \code{c('pred', 'relimp', 'models')}, recommended \code{c('pred')}.}
 

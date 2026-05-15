@@ -6,11 +6,11 @@
 #' @param traits data frame, intuitively, the trait object for which predictions will be made
 #' @param dataset reference data frame from which predictions will be made. If not supplied, will use the the db dataset object from the reference above 
 #' @param fmod model formula, should be specified
-#' @param params set of parameters to optimise the performance of xgboost. 
+#' @param params set of parameters to optimise the performance of xgboost. These are mapped within the function to optimise xgboost's performance. These parameters are dataset-specific so if you change the dataset, you should consider optimising these parameters using (\code{xgb.train}) within xgboost.  
 #' @param niter number of xgboost models run for the bootstrap procedure
 #' @param nrounds maximum number of boosting interactions per model
-#' @param verbose should xgboost speak to you? If you do not want you workspace flooded, keep this at 0. Alternatively, check xgboost help file
-#' @param print_every a friend of verbose, treat it likewise
+#' @param verbosity should xgboost speak to you? If you do not want your workspace flooded, keep this at 0. Alternatively, check xgboost help file
+#' @param print_every_n a friend of verbosity, treat it likewise
 #' @param return what type of information to return. With three options: predictions (\code{pred}), relative importance of the variables used to predict (\code{relimp}), xgboost models (\code{models}). Defaults to \code{c('pred', 'relimp', 'models')}, recommended \code{c('pred')}.
 #' @param lowq low quantile for predictions, defaults to 0.25
 #' @param uppq upper quantile for predictions, defaults to 0.75
@@ -26,26 +26,17 @@
 #' @import xgboost
 
 
-predKmax <- function(traits, dataset, fmod, params = NULL, niter, nrounds = 150, verbose = 0, print_every = 1000, return = c('pred', 'relimp', 'models'), lowq = 0.25, uppq = 0.75) {
+predKmax <- function(traits, dataset, fmod, params = NULL, niter, nrounds = 150, verbosity = 0, print_every_n = 1000, return = c('pred', 'relimp', 'models'), lowq = 0.25, uppq = 0.75) {
 
-
-if (missing (dataset)) {
+if (missing(dataset)) {
   dataset <- db
 }
-
-
-if(identical (dataset, db) & is.null (params)) {
-	
+if(identical(dataset, db) & is.null(params)) {
 	params <- xgboostparams
-	
-} else {
-	
-	params <- list ()
-	warning('Consider optimising xgboost parameters with xgb.train')
-	
-}
-
-	
+	} else {
+		params <- list()
+		warning('Consider optimising xgboost parameters with xgb.train')
+	}
 modmatnd <- stats::model.matrix(fmod, data = traits) [, -1]
 modmat <- stats::model.matrix(fmod, dataset) [, -1]
 	
@@ -54,18 +45,23 @@ rel_imp <- list()
 pred.grid <- as.data.frame(matrix(ncol = niter, nrow = nrow(traits), 
 								  dimnames = list(NULL, paste0('Boot',1:niter))))
 
-
-for (i in 1:niter) {
-	
-	set.seed (i)
-	xgbmod[[i]] <- xgboost::xgboost(modmat, label = dataset[, 'Kmax'], nrounds = nrounds, 
-							 params = params, verbose = verbose, print_every = print_every)
-	rel_imp[[i]] <- xgboost::xgb.importance(colnames (modmat), model = xgbmod[[i]])
-	
+for(i in seq_len(niter)) {
+	set.seed(i)
+	xgbmod[[i]] <- xgboost::xgboost(
+	  x = modmat, 
+	  y = dataset[, 'Kmax'],
+	  objective = params[['objective']],
+	  max_depth = params[['max_depth']],
+	  learning_rate = params[['eta']],
+	  min_split_loss = params[['gamma']],
+	  booster = params[['booster']],
+	  subsample = params[['subsample']],
+	  nrounds = nrounds, 
+	  verbosity = verbosity, 
+	  print_every_n = print_every_n)
+	rel_imp[[i]] <- xgboost::xgb.importance(colnames(modmat), model = xgbmod[[i]])
 	pred.grid[, i] <- stats::predict(xgbmod [[i]], newdata = modmatnd)
-	
 	cat(paste("Bootstrapping the model, round", i), "\n")
-	
 }
 
 df <- cbind(traits, Kmax = apply(pred.grid, 1, stats::median),
